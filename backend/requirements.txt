@@ -1,0 +1,7 @@
+fastapi[standard]
+sentence-transformers
+pdfplumber
+pymongo
+python-dotenv
+passlib
+python-jose
