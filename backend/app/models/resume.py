@@ -1,8 +1,9 @@
-"""Resume document schema placeholder."""
+from datetime import datetime
 
-from typing import TypedDict
-
-
-class ResumeDocument(TypedDict):
-    # TODO: Define the MongoDB resume document fields.
-    pass
+def resume_document(user_id: str, filename: str, raw_text: str) -> dict:
+    return {
+        "user_id": user_id,
+        "filename": filename,
+        "raw_text": raw_text,
+        "created_at": datetime.utcnow()
+    }
