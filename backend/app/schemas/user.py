@@ -1,18 +1,15 @@
-"""User-related API schemas."""
-
-from pydantic import BaseModel
-
+from pydantic import BaseModel, EmailStr
 
 class UserCreate(BaseModel):
-    # TODO: Add registration fields.
-    pass
-
+    name: str
+    email: EmailStr
+    password: str
 
 class UserLogin(BaseModel):
-    # TODO: Add login credential fields.
-    pass
-
+    email: EmailStr
+    password: str
 
 class UserResponse(BaseModel):
-    # TODO: Add safe user response fields.
-    pass
+    id: str
+    name: str
+    email: str

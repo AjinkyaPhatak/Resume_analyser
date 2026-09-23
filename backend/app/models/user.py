@@ -1,8 +1,9 @@
-"""User document schema placeholder."""
+from datetime import datetime
 
-from typing import TypedDict
-
-
-class UserDocument(TypedDict):
-    # TODO: Define the MongoDB user document fields.
-    pass
+def user_document(name: str, email: str, hashed_password: str) -> dict:
+    return {
+        "name": name,
+        "email": email,
+        "password": hashed_password,
+        "created_at": datetime.utcnow()
+    }

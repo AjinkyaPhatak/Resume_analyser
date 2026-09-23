@@ -1,20 +1,14 @@
-"""MongoDB connection configuration."""
-
-import os
-
-from dotenv import load_dotenv
 from pymongo import MongoClient
-from pymongo.database import Database
+from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
-MONGO_URI = os.getenv("MONGO_URI", "")
-DB_NAME = os.getenv("DB_NAME", "")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+DB_NAME = os.getenv("DB_NAME", "resume_analyser")
 
-client = MongoClient(MONGO_URI) if MONGO_URI else None
-db: Database | None = client[DB_NAME] if client and DB_NAME else None
+client = MongoClient(MONGO_URI)
+db = client[DB_NAME]
 
-
-def get_database() -> Database | None:
-    # TODO: Provide the configured MongoDB database to application dependencies.
-    pass
+def get_database():
+    return db
