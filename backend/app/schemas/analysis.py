@@ -1,23 +1,20 @@
-"""Analysis request and response schemas."""
-
 from pydantic import BaseModel
 
-
 class MatchRequest(BaseModel):
-    # TODO: Add resume and job-description input fields.
-    pass
-
+    resume_text: str
+    jd_text: str
 
 class MatchResponse(BaseModel):
-    # TODO: Add semantic-match response fields.
-    pass
-
+    match_percent: float
+    matched_skills: list[dict]
+    missing_skills: list[str]
+    total_jd_skills: int
+    total_matched: int
 
 class BiasRequest(BaseModel):
-    # TODO: Add text input fields.
-    pass
-
+    text: str
 
 class BiasResponse(BaseModel):
-    # TODO: Add bias-analysis response fields.
-    pass
+    bias_score: float
+    flagged_words: list[dict]
+    verdict: str

@@ -3,10 +3,21 @@ from sentence_transformers import SentenceTransformer, util
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
 def extract_skills(text: str) -> list[str]:
-    # split by common delimiters and clean up
     import re
-    lines = re.split(r'[,\n•·\-|/]', text)
-    skills = [line.strip() for line in lines if 2 < len(line.strip()) < 60]
+    # first try splitting by bullets/pipes/semicolons
+    chunks = re.split(r'[•·\-|;]', text)
+    
+    # if that gives too few results, fall back to noun phrases via comma/newline
+    if len(chunks) < 3:
+        chunks = re.split(r'[,\n]', text)
+    
+    skills = []
+    for chunk in chunks:
+        chunk = chunk.strip()
+        # filter out full sentences (too long) and single characters (too short)
+        if 3 < len(chunk) < 50 and not chunk.endswith('.'):
+            skills.append(chunk)
+    
     return skills
 
 def semantic_match(resume_text: str, jd_text: str) -> dict:
