@@ -1,59 +1,96 @@
+import spacy
 from sentence_transformers import SentenceTransformer, util
+import re
 
+nlp = spacy.load("en_core_web_sm")
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
-def extract_skills(text: str) -> list[str]:
-    import re
-    # first try splitting by bullets/pipes/semicolons
-    chunks = re.split(r'[•·\-|;]', text)
-    
-    # if that gives too few results, fall back to noun phrases via comma/newline
-    if len(chunks) < 3:
-        chunks = re.split(r'[,\n]', text)
-    
-    skills = []
-    for chunk in chunks:
-        chunk = chunk.strip()
-        # filter out full sentences (too long) and single characters (too short)
-        if 3 < len(chunk) < 50 and not chunk.endswith('.'):
-            skills.append(chunk)
-    
-    return skills
+# --- Entity Extraction ---
+
+def extract_entities(text: str) -> list[str]:
+    doc = nlp(text)
+    entities = set()
+
+    # named entities — ORG, PRODUCT, GPE often catch tech/tools
+    for ent in doc.ents:
+        if ent.label_ in ("ORG", "PRODUCT", "GPE", "WORK_OF_ART"):
+            entities.add(ent.text.strip())
+
+    # noun chunks — catches "machine learning", "REST APIs", "data pipelines"
+    for chunk in doc.noun_chunks:
+        chunk_text = chunk.text.strip()
+        if 2 < len(chunk_text) < 60:
+            entities.add(chunk_text)
+
+    # verb phrases — catches "built", "designed", "led", "deployed"
+    for token in doc:
+        if token.pos_ == "VERB" and token.dep_ in ("ROOT", "conj", "advcl"):
+            phrase = " ".join(
+                [token.text] + [c.text for c in token.children if c.dep_ in ("dobj", "attr", "prep")]
+            )
+            if len(phrase) > 3:
+                entities.add(phrase.strip())
+
+    return list(entities)
+
+
+# --- Single BERT Pass ---
 
 def semantic_match(resume_text: str, jd_text: str) -> dict:
-    resume_skills = extract_skills(resume_text)
-    jd_skills = extract_skills(jd_text)
+    # Step 1 — entity extraction via spaCy (no BERT yet)
+    resume_entities = extract_entities(resume_text)
+    jd_entities = extract_entities(jd_text)
 
-    if not resume_skills or not jd_skills:
-        return {"error": "Could not extract skills from input"}
+    if not resume_entities or not jd_entities:
+        return {"error": "Could not extract meaningful entities from input"}
 
-    resume_embeddings = model.encode(resume_skills, convert_to_tensor=True)
-    jd_embeddings = model.encode(jd_skills, convert_to_tensor=True)
+    # Step 2 — single BERT pass, encode everything together for efficiency
+    all_texts = resume_entities + jd_entities
+    all_embeddings = model.encode(all_texts, convert_to_tensor=True)
+
+    resume_embeddings = all_embeddings[:len(resume_entities)]
+    jd_embeddings = all_embeddings[len(resume_entities):]
+
+    # Step 3 — build one similarity matrix, derive everything from it
+    similarity_matrix = util.cos_sim(jd_embeddings, resume_embeddings)
+
+    MATCH_THRESHOLD = 0.55
+    NEAR_MISS_THRESHOLD = 0.35
 
     matched = []
-    unmatched = []
-    THRESHOLD = 0.75
+    gaps = []
+    suggestions = []
 
-    for i, jd_skill in enumerate(jd_skills):
-        scores = util.cos_sim(jd_embeddings[i], resume_embeddings)[0]
+    for i, jd_entity in enumerate(jd_entities):
+        scores = similarity_matrix[i]
         best_score = float(scores.max())
         best_match_idx = int(scores.argmax())
 
-        if best_score >= THRESHOLD:
+        if best_score >= MATCH_THRESHOLD:
             matched.append({
-                "jd_skill": jd_skill,
-                "resume_match": resume_skills[best_match_idx],
+                "jd_requirement": jd_entity,
+                "resume_match": resume_entities[best_match_idx],
                 "score": round(best_score, 2)
             })
         else:
-            unmatched.append(jd_skill)
+            gaps.append(jd_entity)
 
-    match_percent = round(len(matched) / len(jd_skills) * 100, 1)
+            # near miss — resume has something related but not well framed
+            if best_score >= NEAR_MISS_THRESHOLD:
+                suggestions.append({
+                    "gap": jd_entity,
+                    "closest_resume_phrase": resume_entities[best_match_idx],
+                    "suggestion": f"Consider reframing '{resume_entities[best_match_idx]}' to more explicitly highlight '{jd_entity}'",
+                    "similarity": round(best_score, 2)
+                })
+
+    match_percent = round(len(matched) / len(jd_entities) * 100, 1)
 
     return {
         "match_percent": match_percent,
-        "matched_skills": matched,
-        "missing_skills": unmatched,
-        "total_jd_skills": len(jd_skills),
+        "matched": matched,
+        "gaps": gaps,
+        "suggestions": suggestions,
+        "total_jd_requirements": len(jd_entities),
         "total_matched": len(matched)
     }
