@@ -1,0 +1,23 @@
+base: main.yaml
+
+# Phase 7: human relevance annotation.
+#   python -m research.annotation.sample      --config configs/annotation.yaml   # draw the 250 pairs
+#   streamlit run research/annotation/app.py                                   # annotate (one CSV per annotator)
+#   python -m research.annotation.agreement   --config configs/annotation.yaml   # kappa / alpha / Spearman
+annotation:
+  n_pairs: 250
+  split: test
+  # Model scores used (a) to stratify the sample by score range and (b) for the Spearman
+  # correlations. Must contain original-condition test scores for the sampled pools.
+  scores_parquet: research/results/main_subset200/scores.parquet
+  # Consensus score = mean over these scorers of the per-pool percentile rank of the pair.
+  strata_scorers: [bm25, sbert_mpnet, jobbert_v2, cross_encoder, entity_li]
+  # Consensus-score bins by quantile edges; each bin gets an EQUAL share of the budget
+  # (then occupation x gender strata within the bin). Pools are 90% irrelevant, so plain
+  # terciles gave 78% obvious non-matches; this over-samples the top of the score range.
+  score_bin_quantiles: [0.0, 0.5, 0.9, 1.0]     # low (bottom half) / mid / top 10%
+  sample_csv: research/annotation/sample_250.csv          # what annotators see (texts only)
+  meta_csv: research/annotation/sample_250_meta.csv       # hidden strata + labels (never shown in the app)
+  labels_dir: research/annotation/labels                  # one CSV per annotator
+  scale: [0, 1, 2, 3]
+  bootstrap: {n: 1000, alpha: 0.05}

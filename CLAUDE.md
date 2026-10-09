@@ -83,10 +83,21 @@ Config paths are relative to the repo root. Configs inherit via a top-level `bas
 | 5 | `venv/Scripts/python.exe -m research.experiments.run --config configs/main.yaml [--subset N]` -> results/main[_subsetN]/ + results/main[_subsetN]_summary.md | harness done; smoke test --subset 200 |
 | 6 | `venv/Scripts/python.exe -m research.experiments.run --config configs/ablations/{entity_types,aggregation,backbone,extractor}.yaml [--subset N]` | done (subset 200) |
 | 6 | `venv/Scripts/python.exe -m research.experiments.nearmiss_sweep --config configs/ablations/nearmiss.yaml [--subset N]` -> results/nearmiss_sweep*.md, results/summaries/figures/ | done (subset 200) |
-| 7 | annotation app: TBD | not started |
+| 7 | `venv/Scripts/python.exe -m research.annotation.sample` (250 pairs) / `streamlit run research/annotation/app.py` / `venv/Scripts/python.exe -m research.annotation.agreement` | tool done; awaiting human ratings |
 | 8 | figures/tables: TBD | not started |
 
 Update this table as each phase lands.
+
+## Phase 7 notes (annotation)
+- research/annotation/: sample.py (strata = consensus-score bin x JD occupation x bio gender;
+  EQUAL budget per score bin cut at the 50%/90% consensus quantiles, because proportional
+  sampling gave 78% obvious non-matches), storage.py (append-only CSV per annotator, latest
+  rating wins), app.py (Streamlit; shows only texts, per-annotator seeded order),
+  agreement.py (Cohen's kappa incl. quadratic, ordinal Krippendorff alpha, Spearman of each
+  scorer and of the graded BiasBios label vs mean human rating, bootstrap CIs), GUIDELINES.md.
+- sample_250.csv (texts shown) / sample_250_meta.csv (hidden strata, labels). Sample drawn from
+  results/main_subset200 scores: 165 / 35 / 50 pairs with graded label 0 / 1 / 2.
+- labels/<annotator>.csv are research data: commit them.
 
 ## Phase 6 notes (ablations)
 - Ablation configs in configs/ablations/ reuse run.py; each lists the main variant as `our_method`
