@@ -1,0 +1,30 @@
+base: data.yaml
+
+# Phase 2: python -m research.experiments.prepare_data --config configs/data_prep.yaml [--subset N]
+# --subset N keeps only the first N JDs (in seeded order) in each of the dev and test pools.
+
+occupations_file: configs/occupations.yaml
+
+biasbios:
+  split_strategy: official   # official (shipped split, comparable with prior work) | stratified
+  fractions: [0.65, 0.10, 0.25]   # only used by split_strategy: stratified
+  min_words: 5
+
+jobs:
+  postings_csv: research/data/raw/jobs/postings.csv
+  min_words: 50                  # drop very short / empty descriptions
+  occupation_map_csv: research/data/occupation_map.csv
+
+relevance:
+  soc_level: major               # grade-1 grouping: major (2-digit) | minor (e.g. 27-2)
+
+pools:
+  n_candidates: 100
+  n_relevant: 10                 # same-occupation bios per pool (half F, half M)
+  irrelevant_sampling: uniform_occupation   # uniform_occupation | proportional
+  jds_per_occupation: 20         # sampled per occupation (if available)
+  min_jds_per_occupation: 5      # occupations with fewer mapped JDs get no pools
+  jd_dev_fraction: 0.3           # JDs used for dev pools (thresholds etc.); rest -> test pools
+  bio_split_for:                 # which BiasBios split fills each pool set
+    dev: dev
+    test: test

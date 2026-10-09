@@ -1,0 +1,171 @@
+# BiasBios occupations: SOC 2018 codes (graded relevance) and job-title patterns
+# (mapping job postings to occupations).
+#
+# SOC codes verified against the O*NET-SOC 2019 taxonomy list (built on SOC 2018),
+# https://www.onetcenter.org/taxonomy/2019/list.html, on 2026-10-09.
+# Where BiasBios's occupation spans several detailed SOC codes, one representative code
+# is listed; only the major group (first two digits) is used for grading by default.
+#
+# Title patterns are case-insensitive Python regexes matched against the normalised
+# posting title. They were written BEFORE looking at any job-posting data.
+#   include:  a match maps the title to this occupation
+#   weak:     a match marks the title as AMBIGUOUS for this occupation (needs human review)
+#   exclude:  a match vetoes this occupation for the title (e.g. "physician assistant")
+#   flag:     the title matched ``include`` but also this -> AMBIGUOUS (e.g. "nurse practitioner")
+# A title matching the include patterns of 2+ occupations is also marked ambiguous.
+#   require_description: (optional) a posting mapped to this occupation is kept only if
+#             its description matches this regex. Used where titles are polysemous.
+#
+# REVISIONS after inspecting LinkedIn titles (2026-10-09; data cleaning only, before any
+# scorer was run): added title_exclude_all; architect gets require_description (most
+# "architect" postings are IT roles); dentist dds/dmd moved to weak (DDS also means
+# Department of Developmental Services); "oral surgeon" weak for surgeon (dental specialty,
+# SOC 29-1022); composer excludes "developer"; veterinary and "sales associate" titles
+# excluded everywhere.
+
+title_exclude_all: ['\bvolunteer\b', '\bspeaker\b', '\bcareer path\b', '\bscheduler\b', '\bveterinar(y|ian)\b', '\bsales associate\b']
+
+occupations:
+  accountant:
+    soc: "13-2011"   # Accountants and Auditors
+    include: ['\baccountant\b']
+    weak: ['\bcpa\b', '\baccounting (specialist|associate)\b']
+    exclude: ['\bassistant\b', '\bclerk\b']
+  architect:
+    soc: "17-1011"   # Architects, Except Landscape and Naval
+    include: ['\barchitect\b']
+    weak: ['\barchitectural designer\b', '\blandscape architect\b']
+    require_description: '\b(revit|ncarb|construction documents|building codes?|schematic design|design development|construction administration|licensed architect|registered architect|architectural (firm|practice))\b'
+    exclude: ['\b(software|solutions?|cloud|data|enterprise|systems?|network|security|technical|it|salesforce|application|integration|infrastructure|aws|azure|devops|platform|database|ai|ml|technology|sap|oracle|servicenow|microsoft|google|java|api|storage|automation)\b', '\blandscape\b']
+  attorney:
+    soc: "23-1011"   # Lawyers
+    include: ['\battorney\b', '\blawyer\b', '\b(general|corporate|associate|deputy|senior|in-house|assistant general|legal) counsel\b', '^counsel\b']
+    weak: ['\bcounsel\b']
+    exclude: ['\bparalegal\b', '\blegal assistant\b', '\bsecretary\b']
+  chiropractor:
+    soc: "29-1011"   # Chiropractors
+    include: ['\bchiropractor\b', '\bchiropractic physician\b', '\bdoctor of chiropractic\b']
+    weak: []
+    exclude: ['\bassistant\b', '\btechnician\b', '\breceptionist\b']
+  comedian:
+    soc: "27-2099"   # Entertainers and Performers, Sports and Related Workers, All Other
+    include: ['\bcomedian\b', '\bstand[- ]?up comic\b']
+    weak: ['\bcomedy\b']
+    exclude: []
+  composer:
+    soc: "27-2041"   # Music Directors and Composers
+    include: ['\bcomposer\b']
+    weak: ['\bmusic director\b']
+    exclude: ['\bdeveloper\b']
+  dentist:
+    soc: "29-1021"   # Dentists, General
+    include: ['\bdentist\b', '\bdental officer\b']
+    weak: ['\bdds\b', '\bdmd\b', '\bendodontist\b', '\borthodontist\b', '\bperiodontist\b']
+    exclude: ['\bassistant\b', '\bhygienist\b', '\breceptionist\b', '\btechnician\b', '\bcoordinator\b', '\boffice manager\b']
+  dietitian:
+    soc: "29-1031"   # Dietitians and Nutritionists
+    include: ['\bdietitian\b', '\bdietician\b', '\bnutritionist\b']
+    weak: []
+    exclude: ['\btechnician\b', '\bassistant\b', '\baide\b']
+  dj:
+    soc: "27-3011"   # Broadcast Announcers and Radio Disc Jockeys
+    include: ['\bdj\b', '\bdisc jockey\b']
+    weak: ['\bradio host\b']
+    exclude: []
+  filmmaker:
+    soc: "27-2012"   # Producers and Directors
+    include: ['\bfilmmaker\b', '\bfilm maker\b', '\bfilm director\b', '\bdocumentary (producer|director)\b']
+    weak: ['\bvideographer\b', '\bvideo producer\b', '\bfilm producer\b']
+    exclude: []
+  interior_designer:
+    soc: "27-1025"   # Interior Designers
+    include: ['\binterior designer\b', '\binterior design\b']
+    weak: ['\binterior architect\b']
+    exclude: []
+  journalist:
+    soc: "27-3023"   # News Analysts, Reporters, and Journalists
+    include: ['\bjournalist\b', '\breporter\b', '\bcorrespondent\b', '\bnews writer\b']
+    weak: ['\bnews (editor|producer)\b']
+    exclude: ['\bcourt reporter\b', '\breporting analyst\b', '\breport(ing)? (developer|writer)\b']
+  model:
+    soc: "41-9012"   # Models
+    include: ['\b(fashion|fit|runway|commercial|promotional|hand|parts|fitting) model\b']
+    weak: ['^model$']
+    exclude: ['\b(data|financial|risk|machine learning|ml|ai|3d|business|credit|pricing|quant|statistical)\b', '\bmodel(l)?ing\b', '\bmodeler\b']
+  nurse:
+    soc: "29-1141"   # Registered Nurses
+    include: ['\bregistered nurse\b', '\brn\b', '\bnurse\b', '\blpn\b', '\blicensed practical nurse\b']
+    weak: []
+    flag: ['\bnurse practitioner\b', '\bnurse (manager|educator)\b']
+    exclude: ['\bnurse aide\b', '\bnursing assistant\b', '\bcna\b', '\brecruiter\b']
+  painter:
+    soc: "27-1013"   # Fine Artists, Including Painters, Sculptors, and Illustrators
+    include: ['\bfine artist\b', '\bmuralist\b', '\bportrait (artist|painter)\b']
+    weak: ['\bpainter\b']   # most "painter" postings are trade painters (SOC 47-2141), not artists
+    exclude: ['\b(automotive|auto body|industrial|house|commercial|residential|production|spray|maintenance|construction|drywall)\b']
+  paralegal:
+    soc: "23-2011"   # Paralegals and Legal Assistants
+    include: ['\bparalegal\b', '\blegal assistant\b']
+    weak: []
+    exclude: []
+  pastor:
+    soc: "21-2011"   # Clergy
+    include: ['\bpastor\b', '\bpriest\b', '\breverend\b', '\bclergy\b']
+    weak: ['\bminister\b', '\bchaplain\b']
+    exclude: []
+  personal_trainer:
+    soc: "39-9031"   # Exercise Trainers and Group Fitness Instructors
+    include: ['\bpersonal trainer\b', '\bfitness trainer\b', '\bfitness coach\b']
+    weak: ['\bfitness instructor\b', '\bstrength (and conditioning )?coach\b']
+    exclude: ['\bathletic trainer\b']
+  photographer:
+    soc: "27-4021"   # Photographers
+    include: ['\bphotographer\b']
+    weak: ['\bphoto editor\b']
+    exclude: []
+  physician:
+    soc: "29-1229"   # Physicians, All Other (BiasBios physicians span 29-1211..29-1229)
+    include: ['\bphysician\b', '\bhospitalist\b', '\binternist\b', '\bpediatrician\b', '\bpsychiatrist\b', '\banesthesiologist\b', '\bradiologist\b', '\bcardiologist\b', '\boncologist\b', '\bneurologist\b', '\bdermatologist\b', '\bgastroenterologist\b', '\bobstetrician\b', '\bgynecologist\b', '\burologist\b', '\bpathologist\b', '\bpulmonologist\b', '\bnephrologist\b', '\bendocrinologist\b', '\bintensivist\b', '\bneonatologist\b', '\brheumatologist\b']
+    weak: ['\bmd\b', '\bmedical director\b', '\bdoctor\b']
+    exclude: ['\bphysician assistant\b', '\bphysician associate\b', '\bassistant\b', '\brecruit', '\bliaison\b', '\bscribe\b', '\bcoordinator\b', '\bbilling\b', '\bsales\b', '\bspeech[- ]language pathologist\b', '\bsurgeon\b', '\bmarketing\b']
+  poet:
+    soc: "27-3043"   # Writers and Authors
+    include: ['\bpoet\b']
+    weak: ['\bcreative writer\b']
+    exclude: []
+  professor:
+    soc: "25-1199"   # Postsecondary Teachers, All Other
+    include: ['\bprofessor\b', '\blecturer\b', '\b(adjunct|clinical|teaching|tenure[- ]track) faculty\b']
+    weak: ['\bfaculty\b', '\binstructor\b']
+    exclude: ['\bassistant to\b', '\b(yoga|fitness|driving|ski|swim(ming)?|dance|flight)\b']
+  psychologist:
+    soc: "19-3033"   # Clinical and Counseling Psychologists (BiasBios psychologists are mostly clinical)
+    include: ['\bpsychologist\b']
+    weak: []
+    exclude: ['\bassistant\b', '\btechnician\b', '\bpsychometrist\b']
+  rapper:
+    soc: "27-2042"   # Musicians and Singers
+    include: ['\brapper\b', '\bhip[- ]hop artist\b']
+    weak: []
+    exclude: []
+  software_engineer:
+    soc: "15-1252"   # Software Developers
+    include: ['\bsoftware (engineer|developer|development engineer)\b', '\bsde\b', '\bswe\b', '\b(back[- ]?end|front[- ]?end|full[- ]?stack) (engineer|developer)\b', '\bprogrammer\b']
+    weak: ['\b(web|mobile|ios|android|java|python|\.net) developer\b', '\bapplication developer\b']
+    exclude: ['\b(test|qa|quality assurance)\b', '\bmanager\b', '\brecruiter\b', '\bsales\b']
+  surgeon:
+    soc: "29-1249"   # Surgeons, All Other
+    include: ['\bsurgeon\b']
+    weak: []
+    flag: ['\boral (and maxillofacial )?surgeon\b']
+    exclude: ['\bassistant\b', '\btechnologist\b', '\btech\b', '\bscheduler\b', '\bcoordinator\b']
+  teacher:
+    soc: "25-2031"   # Secondary School Teachers (BiasBios teachers span 25-2011..25-2059)
+    include: ['\bteacher\b']
+    weak: ['\btutor\b', '\beducator\b']
+    exclude: ['\byoga\b', '\bassistant\b', '\baide\b']
+  yoga_teacher:
+    soc: "39-9031"   # Exercise Trainers and Group Fitness Instructors
+    include: ['\byoga (teacher|instructor)\b']
+    weak: ['\byoga\b']
+    exclude: []

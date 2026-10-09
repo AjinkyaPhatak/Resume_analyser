@@ -1,0 +1,46 @@
+base: data.yaml
+
+# Phase 1: span-level evaluation of skill extractors on SkillSpan.
+#   python -m research.experiments.eval_extraction --config configs/extraction.yaml [--subset N]
+
+eval:
+  splits: [dev, test]       # filters/hyperparameters may be tuned on dev only
+  n_examples: 15            # dev sentences dumped to results/extraction_examples.md
+  batch_size: 256
+
+spacy_model: en_core_web_sm
+
+# Noun-chunk filter used by esco+nc and filtered_nc. Written before seeing any eval
+# numbers (2026-10-08). Change only with dev-split evidence; note changes in CLAUDE.md.
+noun_chunk_filter:
+  trim_pos: [DET, PRON, PUNCT, CCONJ, ADP, PART, NUM]
+  trim_stopwords: true
+  drop_regex: "<[A-Z_]+>"           # anonymisation placeholders, e.g. <ORGANIZATION>
+  min_chars: 2
+  generic_nouns: [
+    experience, year, team, ability, candidate, company, role, position, job,
+    opportunity, work, environment, skill, knowledge, understanding, responsibility,
+    requirement, level, part, way, time, people, member, day, benefit, salary, office,
+    place, plus, area, field, range, lot, kind, type, thing, number, variety, need,
+    chance, location, organization, employer, employee, applicant, colleague, person,
+    someone, everyone, something, anything, other, one, lot, end, focus, interest
+  ]
+
+esco_ruler:
+  match_attrs: [lemma, lower]
+  include_alt_labels: true
+  include_hidden_labels: false
+  min_label_chars: 2
+  max_label_tokens: 8
+  drop_stopword_only: true
+  exclude_labels: []
+
+extractors:
+  - {name: noun_chunk, type: noun_chunk}         # (a) backend-faithful baseline
+  - {name: esco, type: esco}                     # (b) ESCO EntityRuler
+  - {name: esco+nc, type: esco_nc}               # (c) ESCO + filtered noun chunks
+  - {name: filtered_nc, type: filtered_nc}       # diagnostic: filter alone
+  # (d) fine-tuned JobBERT, one row per training seed; seed_group rows are also averaged
+  - {name: jobbert_ft_s13, type: token_classifier, seed_group: jobbert_ft, model_dir: research/models/jobbert_skillspan/seed13}
+  - {name: jobbert_ft_s14, type: token_classifier, seed_group: jobbert_ft, model_dir: research/models/jobbert_skillspan/seed14}
+  - {name: jobbert_ft_s15, type: token_classifier, seed_group: jobbert_ft, model_dir: research/models/jobbert_skillspan/seed15}

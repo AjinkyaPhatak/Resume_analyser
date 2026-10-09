@@ -1,0 +1,22 @@
+base: data.yaml
+
+# Fine-tuned token-classification extractor (Phase 1, optional).
+finetune:
+  # JobBERT (Zhang et al., 2022): BERT-base-cased further pre-trained on job postings,
+  # by the SkillSpan authors. Verified on HF 2026-10-08 (fill-mask base checkpoint).
+  base_model: jjzha/jobbert-base-cased
+  revision: eee1c8da6200fbaf2e2dcba53d54f6363f7a16dd
+  layers: [skill, knowledge]
+  dropout: 0.1
+  lr: 5.0e-5
+  weight_decay: 0.01
+  batch_size: 16
+  eval_batch_size: 64
+  max_epochs: 10
+  patience: 3              # early stopping on dev exact span F1
+  warmup_ratio: 0.1
+  max_grad_norm: 1.0
+  max_length: 256          # covers the train p99 (200 sub-tokens); longer is truncated
+  amp: true               # fp16 mixed precision on CUDA (ignored on CPU)
+  output_dir: research/models/jobbert_skillspan
+# Run several seeds for the paper: --set seed=13, 14, 15 ...

@@ -1,0 +1,72 @@
+base: data_prep.yaml
+
+# Phase 3 scorers. All model IDs and revisions verified on HF on 2026-10-09.
+extraction_config: configs/extraction.yaml
+
+# Corpus statistics for lexical scorers: a seeded sample of TRAIN-split bios plus the JDs
+# used in pools (never the test bios being scored).
+fit:
+  lexical_train_bios: 50000
+
+backbones:
+  minilm:
+    model: sentence-transformers/all-MiniLM-L6-v2
+    revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+    max_seq_length: 256
+  mpnet:
+    model: sentence-transformers/all-mpnet-base-v2
+    revision: e8c3b32edf5434bc2275fc9bab85f82640a19130
+    max_seq_length: 384
+  jobbert_v2:
+    # Trained on job titles <-> skill lists (64-token inputs), anchor = job-title head.
+    model: TechWolf/JobBERT-v2
+    revision: a480476925abdf9d97621e56aa38abbb572fe343
+    max_seq_length: 64
+    task: anchor
+
+scorers:
+  - {name: bm25, type: bm25, k1: 1.5, b: 0.75, epsilon: 0.25, remove_stopwords: true}
+  - {name: tfidf, type: tfidf, sublinear_tf: true, min_df: 1, remove_stopwords: true}
+  - {name: sbert_minilm, type: sbert, backbone: minilm, long_text: chunk_mean}
+  - {name: sbert_mpnet, type: sbert, backbone: mpnet, long_text: chunk_mean}
+  - {name: jobbert_v2, type: sbert, backbone: jobbert_v2, long_text: chunk_mean}
+  - name: cross_encoder
+    type: cross_encoder
+    model: cross-encoder/ms-marco-MiniLM-L6-v2
+    revision: 233902d25c440f23af6f7d6e94d2946bac0bee0a
+    max_length: 512
+    batch_size: 32
+  - name: llm_judge
+    type: llm_judge
+    enabled: false            # slow; enable explicitly (--set) on a subset
+    model: Qwen/Qwen2.5-1.5B-Instruct
+    revision: 989aa7980e4cf806f80c7fef2b1adb7bc71aa306
+    max_new_tokens: 8
+    max_input_tokens: 1536
+    batch_size: 4
+  # The deployed backend matcher, reproduced: noun-chunk entities, exact dedupe,
+  # MiniLM, share of JD entities with max cosine >= 0.55.
+  - name: backend_match
+    type: entity
+    extractor: {type: noun_chunk}
+    backbone: minilm
+    aggregation: threshold_fraction
+    threshold: 0.55
+    dedupe: exact
+    labels: null
+  # Our method (main variant, chosen 2026-10-09 on DEV evidence, configs/dev_entity_variants.yaml):
+  # union of the fine-tuned JobBERT extractor (seed 13) and the ESCO EntityRuler, skill +
+  # knowledge spans only, MiniLM entity embeddings, MaxSim-mean aggregation. Fairness is
+  # also reported conditional on both sides having entities (empty -> score 0).
+  - name: entity_li
+    type: entity
+    extractor:
+      type: union
+      name: jobbert+esco
+      members:
+        - {type: token_classifier, name: jobbert_ft_s13, model_dir: research/models/jobbert_skillspan/seed13}
+        - {type: esco}
+    backbone: minilm
+    aggregation: maxsim_mean
+    labels: [skill, knowledge]
+    dedupe: casefold

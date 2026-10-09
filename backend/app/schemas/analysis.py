@@ -8,6 +8,7 @@ class MatchResponse(BaseModel):
     match_percent: float
     matched_skills: list[dict]
     missing_skills: list[str]
+    suggestions: list[dict] = []
     total_jd_skills: int
     total_matched: int
 

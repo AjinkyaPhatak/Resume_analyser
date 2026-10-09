@@ -1,0 +1,15 @@
+# Shared defaults. Experiment configs inherit with `base: base.yaml` and override.
+seed: 13
+deterministic: false        # true -> torch deterministic kernels (slower)
+device: auto                # auto | cpu | cuda  (auto = cuda if available, else cpu)
+subset: null                # set by --subset N for quick runs
+
+paths:
+  raw_data: research/data/raw         # gitignored; manual downloads go here
+  processed_data: research/data/processed
+  results: research/results
+  embedding_cache: research/.cache/embeddings
+
+embedding:
+  batch_size: 64
+  normalize: true

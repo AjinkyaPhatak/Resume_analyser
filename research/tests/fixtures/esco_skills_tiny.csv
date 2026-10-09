@@ -1,0 +1,9 @@
+conceptType,conceptUri,skillType,reuseLevel,preferredLabel,altLabels,hiddenLabels,status,modifiedDate,scopeNote,definition,inScheme,description
+KnowledgeSkillCompetence,http://example.org/esco/python,knowledge,cross-sector,Python (computer programming),"Python
+python programming",,released,,,,,Fixture.
+KnowledgeSkillCompetence,http://example.org/esco/budget,skill/competence,cross-sector,manage budgets,"manage budget
+budget management",,released,,,,,Fixture.
+KnowledgeSkillCompetence,http://example.org/esco/ml,knowledge,cross-sector,machine learning,ML,,released,,,,,Fixture.
+KnowledgeSkillCompetence,http://example.org/esco/stop,skill/competence,cross-sector,the,"it
+a",,released,,,,,Fixture: stopword-only labels must be dropped.
+KnowledgeSkillCompetence,http://example.org/esco/obsolete,skill/competence,cross-sector,use typewriter,,,obsolete,,,,,Fixture: non-released must be dropped.

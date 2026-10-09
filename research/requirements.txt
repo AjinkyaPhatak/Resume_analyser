@@ -1,0 +1,28 @@
+# Research dependencies, pinned. Verified on Python 3.14.7 (Windows; torch 2.13.0+cu126, see GPU note).
+# Install into the repo venv:  venv\Scripts\python -m pip install -r research/requirements.txt
+#
+# Policy: a package is added here only after it has been installed and imported
+# successfully in this environment. Each later phase appends its own pinned deps
+# (e.g. rank_bm25, datasets, pandas, streamlit, matplotlib, krippendorff).
+#
+# GPU: this machine uses the CUDA 12.6 build of torch (RTX 2060, driver 581.57):
+#   venv\Scripts\python -m pip install --no-deps --force-reinstall "torch==2.13.0+cu126" --index-url https://download.pytorch.org/whl/cu126
+# On a CPU-only machine plain torch==2.13.0 works; the code falls back to CPU automatically.
+
+numpy==2.5.2
+scipy==1.18.0
+scikit-learn==1.9.0
+PyYAML==6.0.3
+torch==2.13.0
+transformers==5.15.1
+sentence-transformers==6.0.0
+huggingface_hub==1.28.0
+spacy==3.8.16
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl#sha256=1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
+tqdm==4.70.0
+pandas==3.0.6
+pyarrow==25.0.1
+rank_bm25==0.2.2
+
+# testing
+pytest==9.1.1

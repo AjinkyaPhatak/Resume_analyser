@@ -18,3 +18,14 @@ node_modules/
 *.local
 .DS_Store
 .vscode/
+
+# Research
+research/.cache/
+research/data/raw/
+research/data/processed/
+research/models/
+research/results/*
+!research/results/*.md
+!research/results/summaries/
+!research/results/.gitkeep
+.pytest_cache/

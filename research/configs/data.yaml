@@ -1,0 +1,35 @@
+base: base.yaml
+
+datasets:
+  skillspan:
+    # Zhang et al. (2022), NAACL. CC-BY-4.0. Verified on HF 2026-10-08.
+    # Released portion = STAR ("house") + StackOverflow ("tech") postings only.
+    hf_id: jjzha/skillspan
+    revision: 33062e6bd0e03a5e01ae299ce0518f4613ef4298
+    files: [train.json, dev.json, test.json]
+    local_dir: research/data/raw/skillspan
+
+  biasbios:
+    # De-Arteaga et al. (2019), version of Ravfogel et al. (2020). MIT. Verified on HF 2026-10-09.
+    # Columns: hard_text (bio with the occupation-revealing first sentence removed),
+    # profession (int, 28 classes), gender (0 = male, 1 = female; binary, as in the source).
+    hf_id: LabHC/bias_in_bios
+    revision: 052f01de644dba841176e0449528b41f27d94a61
+    files:
+      - data/train-00000-of-00001-0ab65b32c47407e8.parquet
+      - data/dev-00000-of-00001-e6551072fff26949.parquet
+      - data/test-00000-of-00001-5598c840ce8de1ee.parquet
+    local_dir: research/data/raw/biasbios
+
+  linkedin_jobs:
+    # arshkon "LinkedIn Job Postings (2023-2024)", Kaggle, CC BY-SA 4.0. Manual download
+    # (placed 2026-10-09). Only postings.csv is used.
+    url: https://www.kaggle.com/datasets/arshkon/linkedin-job-postings
+    postings_sha256: de33f27c8d1b226014e0cede003404e9b0acb66db718671fda9b3e3538eca6ea
+    local_dir: research/data/raw/jobs
+
+  esco:
+    # Manual download (the official portal emails a link). See research/data/README.md.
+    version: v1.2.1    # official download, classification, en, csv (placed 2026-10-08)
+    local_dir: research/data/raw/esco
+    skills_csv: skills_en.csv

@@ -1,0 +1,18 @@
+base: scorers.yaml
+
+# Dev-only comparison of entity-scorer variants (Phase 3 model selection; never test).
+#   python -m research.experiments.scorer_smoke --config configs/dev_entity_variants.yaml --subset 30
+_jobbert: &jobbert {type: token_classifier, name: jobbert_ft_s13, model_dir: research/models/jobbert_skillspan/seed13}
+
+scorers:
+  - {name: ent_jobbert, type: entity, extractor: *jobbert, backbone: minilm, aggregation: maxsim_mean, labels: [skill, knowledge]}
+  - {name: ent_esco, type: entity, extractor: {type: esco}, backbone: minilm, aggregation: maxsim_mean, labels: [skill, knowledge]}
+  - name: ent_union
+    type: entity
+    extractor: {type: union, name: jobbert+esco, members: [*jobbert, {type: esco}]}
+    backbone: minilm
+    aggregation: maxsim_mean
+    labels: [skill, knowledge]
+  - {name: ent_esco_nc, type: entity, extractor: {type: esco_nc}, backbone: minilm, aggregation: maxsim_mean, labels: [skill, knowledge]}
+  - {name: ent_nounchunk_all, type: entity, extractor: {type: noun_chunk}, backbone: minilm, aggregation: maxsim_mean, labels: null}
+  - {name: sbert_minilm, type: sbert, backbone: minilm, long_text: chunk_mean}
