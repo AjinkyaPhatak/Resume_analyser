@@ -80,12 +80,24 @@ Config paths are relative to the repo root. Configs inherit via a top-level `bas
 | 3 | `venv/Scripts/python.exe -m pytest research -m slow` (real-model scorer tests incl. backend parity) | done |
 | 3 | `venv/Scripts/python.exe -m research.experiments.scorer_smoke [--config ...] [--subset N]` (DEV pools only) | done |
 | 4 | `venv/Scripts/python.exe -m research.experiments.make_perturbations [--subset N]` -> data/processed/perturbations_*.parquet, results/perturbation_samples.md, results/perturbation_stats.md | done |
-| 5 | `python -m research.experiments.run --config configs/main.yaml [--subset N]` | not started |
+| 5 | `venv/Scripts/python.exe -m research.experiments.run --config configs/main.yaml [--subset N]` -> results/main[_subsetN]/ + results/main[_subsetN]_summary.md | harness done; smoke test --subset 200 |
 | 6 | ablations: TBD | not started |
 | 7 | annotation app: TBD | not started |
 | 8 | figures/tables: TBD | not started |
 
 Update this table as each phase lands.
+
+## Phase 5 notes (metrics + harness)
+- metrics/ranking.py: TIE-AWARE expected nDCG@10 (graded, gain 2^g-1), MRR, P@k (McSherry & Najork 2008),
+  because entity scorers give many exact ties (0.0).
+- metrics/fairness.py: per-pool counterfactual gap (raw and NORMALISED by the pool's SD of original
+  scores -- scorer scales differ), signed gap oriented + = favours female/communal/target version,
+  rank shift, TPR gap (threshold = best F1 on DEV per-pool z-scores, applied to test), top-10 exposure.
+- metrics/stats.py: cluster bootstrap over JD pools (1000, seeded); paired sign-flip permutation tests
+  over pools (ours vs each baseline), Holm-corrected per metric family.
+- Unchanged counterfactuals copy the original score (gap 0); headline gaps use CHANGED bios only;
+  entity scorers also report gaps restricted to pairs with entities on both sides (`*_nonempty`).
+- --subset N = N seeded pools per split.
 
 ## Phase 4 notes (perturbations)
 - `research/perturbations/`: each bio parsed once (en_core_web_sm); parts propose token-range

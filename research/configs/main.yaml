@@ -1,0 +1,24 @@
+base: scorers.yaml
+
+# Phase 5 main experiment:
+#   python -m research.experiments.run --config configs/main.yaml [--subset N]
+# --subset N = N randomly chosen (seeded) pools per split (dev and test).
+
+perturbations_config: configs/perturbations.yaml
+
+experiment:
+  name: main
+  conditions: [pronoun_swap, name_swap_us, name_swap_in, name_in_same_gender,
+               affiliation_swap, agentic_communal, gender_full]
+  # How signed gaps are oriented (positive = scorer favours ...):
+  #   gender:   the female-coded version (sign from the bio's gender label)
+  #   communal: the more communal version (sign from the logged swap directions)
+  #   target:   the perturbed version (e.g. Indian name, gender fixed)
+  orientation: {default: gender, agentic_communal: communal, name_in_same_gender: target}
+  our_method: entity_li
+  score_chunk: 20000            # pairs per score_batch call
+  exposure_k: 10
+  bootstrap: {n: 1000, alpha: 0.05}
+  permutation: {n: 10000}
+  # fairness metrics tested ours-vs-baseline (per pool, paired; Holm across baselines)
+  test_metrics: [abs_gap_norm_changed]

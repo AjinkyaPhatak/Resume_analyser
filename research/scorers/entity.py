@@ -101,6 +101,12 @@ class EntityLateInteractionScorer(BaseScorer):
     def score(self, resume: str, jd: str) -> float:
         return self.score_batch([(resume, jd)])[0]
 
+    def nonempty_batch(self, pairs: list[tuple[str, str]]) -> list[bool]:
+        """True where both the resume and the JD have at least one kept entity."""
+        texts = list(dict.fromkeys(t for pair in pairs for t in pair))
+        has = {t: bool(e) for t, e in zip(texts, self.entities_batch(texts))}
+        return [has[r] and has[j] for r, j in pairs]
+
     def explain(self, resume: str, jd: str) -> dict:
         """Entities, best matches and per-JD-entity max similarity, for inspection."""
         r_ents, j_ents = self.entities_batch([resume, jd])
