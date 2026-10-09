@@ -54,19 +54,22 @@ scorers:
     threshold: 0.55
     dedupe: exact
     labels: null
-  # Our method (main variant, chosen 2026-10-09 on DEV evidence, configs/dev_entity_variants.yaml):
-  # union of the fine-tuned JobBERT extractor (seed 13) and the ESCO EntityRuler, skill +
-  # knowledge spans only, MiniLM entity embeddings, MaxSim-mean aggregation. Fairness is
-  # also reported conditional on both sides having entities (empty -> score 0).
+  # Our method (FINAL main variant). Chosen 2026-10-09 by the pre-declared DEV-only rule in
+  # configs/selection.yaml (highest dev nDCG@10 = 0.606; fairness not used for selection):
+  # union(fine-tuned JobBERT seed 13, ESCO EntityRuler, filtered noun chunks), skill +
+  # knowledge labels, JobBERT-v2 entity embeddings, IDF-weighted MaxSim (IDF over pool JDs).
+  # History: Phase 3-6 used union(JobBERT, ESCO), skills only, MiniLM, maxsim_mean
+  # (kept as the reference of the Phase 6 ablations).
   - name: entity_li
     type: entity
     extractor:
       type: union
-      name: jobbert+esco
+      name: jobbert+esco+fnc
       members:
         - {type: token_classifier, name: jobbert_ft_s13, model_dir: research/models/jobbert_skillspan/seed13}
         - {type: esco}
-    backbone: minilm
-    aggregation: maxsim_mean
+        - {type: filtered_nc}
+    backbone: jobbert_v2
+    aggregation: idf_weighted
     labels: [skill, knowledge]
     dedupe: casefold

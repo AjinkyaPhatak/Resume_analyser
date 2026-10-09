@@ -1,0 +1,16 @@
+\begin{table*}[t]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+Extractor & Exact P & Exact R & Exact F1 & Partial F1 \\
+\midrule
+noun\_chunk & 0.042 & 0.256 & 0.073 & 0.328 \\
+esco & 0.231 & 0.131 & 0.167 & 0.330 \\
+esco+nc & 0.082 & 0.289 & 0.128 & 0.385 \\
+filtered\_nc & 0.064 & 0.213 & 0.099 & 0.374 \\
+fine-tuned JobBERT (3 seeds) & 0.578$\pm$0.008 & 0.649$\pm$0.014 & 0.611$\pm$0.009 & 0.871$\pm$0.002 \\
+\bottomrule
+\end{tabular}
+\caption{Span-level skill extraction on the SkillSpan test split (skill $\cup$ knowledge). Partial = overlap of at least one token.}
+\label{tab:extraction}
+\end{table*}

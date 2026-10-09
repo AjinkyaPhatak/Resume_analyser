@@ -1,0 +1,33 @@
+\begin{table*}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+Variant & nDCG@10 & Pronoun swap & Name swap (US) & Agentic/communal & Full gender flip \\
+\midrule
+\multicolumn{6}{l}{\textit{entity types}} \\
+\quad ent\_skills\_only & 0.443\,{\scriptsize[0.411, 0.474]} & 0.069\,{\scriptsize[0.066, 0.073]} & 0.041\,{\scriptsize[0.035, 0.046]} & 0.447\,{\scriptsize[0.387, 0.503]} & 0.074\,{\scriptsize[0.071, 0.078]} \\
+\quad ent\_plus\_noun\_chunks & 0.559\,{\scriptsize[0.531, 0.585]} & 0.026\,{\scriptsize[0.024, 0.027]} & 0.037\,{\scriptsize[0.034, 0.039]} & 0.153\,{\scriptsize[0.136, 0.171]} & 0.032\,{\scriptsize[0.031, 0.034]} \\
+\quad ent\_plus\_noun\_chunks\_verbs & 0.536\,{\scriptsize[0.507, 0.565]} & 0.026\,{\scriptsize[0.024, 0.027]} & 0.034\,{\scriptsize[0.031, 0.037]} & 0.124\,{\scriptsize[0.110, 0.138]} & 0.031\,{\scriptsize[0.030, 0.033]} \\
+\midrule
+\multicolumn{6}{l}{\textit{aggregation}} \\
+\quad agg\_maxsim\_mean & 0.443\,{\scriptsize[0.411, 0.474]} & 0.069\,{\scriptsize[0.066, 0.073]} & 0.041\,{\scriptsize[0.035, 0.046]} & 0.447\,{\scriptsize[0.387, 0.503]} & 0.074\,{\scriptsize[0.071, 0.078]} \\
+\quad agg\_hungarian & 0.266\,{\scriptsize[0.241, 0.291]} & 0.100\,{\scriptsize[0.097, 0.104]} & 0.052\,{\scriptsize[0.046, 0.057]} & 0.450\,{\scriptsize[0.415, 0.489]} & 0.107\,{\scriptsize[0.104, 0.111]} \\
+\quad agg\_idf\_weighted & 0.453\,{\scriptsize[0.421, 0.483]} & 0.069\,{\scriptsize[0.066, 0.073]} & 0.041\,{\scriptsize[0.035, 0.046]} & 0.436\,{\scriptsize[0.378, 0.490]} & 0.075\,{\scriptsize[0.071, 0.078]} \\
+\midrule
+\multicolumn{6}{l}{\textit{backbone}} \\
+\quad bb\_minilm & 0.443\,{\scriptsize[0.411, 0.474]} & 0.069\,{\scriptsize[0.066, 0.073]} & 0.041\,{\scriptsize[0.035, 0.046]} & 0.447\,{\scriptsize[0.387, 0.503]} & 0.074\,{\scriptsize[0.071, 0.078]} \\
+\quad bb\_mpnet & 0.436\,{\scriptsize[0.405, 0.468]} & 0.067\,{\scriptsize[0.064, 0.071]} & 0.041\,{\scriptsize[0.035, 0.047]} & 0.371\,{\scriptsize[0.318, 0.421]} & 0.073\,{\scriptsize[0.069, 0.076]} \\
+\quad bb\_jobbert\_v2 & 0.486\,{\scriptsize[0.454, 0.517]} & 0.061\,{\scriptsize[0.058, 0.065]} & 0.041\,{\scriptsize[0.035, 0.049]} & 0.275\,{\scriptsize[0.226, 0.321]} & 0.067\,{\scriptsize[0.063, 0.070]} \\
+\midrule
+\multicolumn{6}{l}{\textit{extractor}} \\
+\quad ex\_noun\_chunk & 0.491\,{\scriptsize[0.462, 0.523]} & 0.162\,{\scriptsize[0.151, 0.172]} & 0.031\,{\scriptsize[0.029, 0.033]} & 0.052\,{\scriptsize[0.044, 0.060]} & 0.163\,{\scriptsize[0.152, 0.173]} \\
+\quad ex\_esco & 0.378\,{\scriptsize[0.344, 0.411]} & 0.000\,{\scriptsize[0.000, 0.000]} & 0.007\,{\scriptsize[0.004, 0.009]} & 0.565\,{\scriptsize[0.493, 0.643]} & 0.002\,{\scriptsize[0.001, 0.002]} \\
+\quad ex\_jobbert\_ft & 0.327\,{\scriptsize[0.300, 0.354]} & 0.160\,{\scriptsize[0.155, 0.166]} & 0.068\,{\scriptsize[0.059, 0.076]} & 0.156\,{\scriptsize[0.119, 0.195]} & 0.169\,{\scriptsize[0.163, 0.175]} \\
+\quad ex\_union & 0.443\,{\scriptsize[0.411, 0.474]} & 0.069\,{\scriptsize[0.066, 0.073]} & 0.041\,{\scriptsize[0.035, 0.046]} & 0.447\,{\scriptsize[0.387, 0.503]} & 0.074\,{\scriptsize[0.071, 0.078]} \\
+\bottomrule
+\end{tabular}
+}
+\caption{PRELIMINARY. Ablations (test): ranking accuracy and normalised counterfactual $|$gap$|$.}
+\label{tab:ablations}
+\end{table*}

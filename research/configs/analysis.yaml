@@ -1,0 +1,51 @@
+base: main.yaml
+
+# Phase 8: figures + LaTeX tables generated directly from the results CSVs.
+#   python -m research.analysis.make_all --config configs/analysis.yaml
+# Point the *_dir keys at subset runs (e.g. --set analysis.main_dir=research/results/main_subset200)
+# to preview with preliminary numbers; outputs are then tagged PRELIMINARY.
+analysis:
+  main_dir: research/results/main
+  selection_dir: research/results/selection_dev
+  ablation_dirs:
+    entity_types: research/results/ablation_entity_types
+    aggregation: research/results/ablation_aggregation
+    backbone: research/results/ablation_backbone
+    extractor: research/results/ablation_extractor
+  extraction_csv: research/results/extraction/metrics.csv
+  nearmiss_md: research/results/nearmiss_sweep.md
+  figures_dir: research/results/summaries/figures
+  tables_dir: research/results/summaries/tables
+  our_method: entity_li
+  # Headline figure: x = ranking accuracy, y = counterfactual |gap| under the full gender flip
+  # (pronouns + first name; the single most complete gender counterfactual).
+  headline: {x_metric: ndcg@10, y_condition: gender_full, y_metric: abs_gap_norm_changed}
+  bar_conditions: [pronoun_swap, name_swap_us, name_swap_in, name_in_same_gender,
+                   affiliation_swap, agentic_communal, gender_full]
+  # Colour = scorer FAMILY (validated: only 3 categorical slots are safe all-pairs in a
+  # scatter); identity is carried by direct labels.
+  families:
+    ours: [entity_li]
+    neural: [sbert_minilm, sbert_mpnet, jobbert_v2, cross_encoder, llm_judge]
+    lexical: [bm25, tfidf]
+    deployed: [backend_match]
+  display:
+    entity_li: "Entity LI (ours)"
+    bm25: "BM25"
+    tfidf: "TF-IDF"
+    sbert_minilm: "SBERT MiniLM"
+    sbert_mpnet: "SBERT mpnet"
+    jobbert_v2: "JobBERT-v2"
+    cross_encoder: "Cross-encoder"
+    llm_judge: "LLM judge"
+    backend_match: "Deployed backend"
+  condition_display:
+    pronoun_swap: "Pronoun swap"
+    name_swap_us: "Name swap (US)"
+    name_swap_in: "Name swap (Indian)"
+    name_in_same_gender: "Indian name, same gender"
+    affiliation_swap: "Affiliation swap"
+    agentic_communal: "Agentic/communal"
+    gender_full: "Full gender flip"
+
+selection_choice: sel_union_fnc_jobbert_idf   # winner of configs/selection.yaml (dev nDCG@10 0.606)

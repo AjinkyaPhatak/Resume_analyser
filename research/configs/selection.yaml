@@ -1,0 +1,28 @@
+base: main.yaml
+
+# Model selection for the MAIN method (user decision 2026-10-09: "option 1").
+#   python -m research.experiments.run --config configs/selection.yaml
+# DEV SPLIT ONLY. Pre-declared rule: pick the variant with the highest DEV nDCG@10
+# (mean over dev pools). Fairness metrics are NOT used for selection, because they are
+# the outcome under test. Ties within 0.005 -> prefer the simpler variant (fewer
+# extractor components, then MiniLM, then maxsim_mean).
+# Candidate family (motivated by the Phase 6 ablations): skill entities + filtered noun
+# chunks; extractor x entity backbone x aggregation.
+experiment:
+  name: selection_dev
+  splits: [dev]
+  our_method: sel_union_fnc_minilm_maxsim
+
+_jb: &jb {type: token_classifier, name: jobbert_ft_s13, model_dir: research/models/jobbert_skillspan/seed13}
+_ufnc: &ufnc {type: union, name: jobbert+esco+fnc, members: [*jb, {type: esco}, {type: filtered_nc}]}
+_escnc: &escnc {type: esco_nc}
+
+scorers:
+  - {name: sel_union_fnc_minilm_maxsim,   type: entity, extractor: *ufnc,  backbone: minilm,     aggregation: maxsim_mean,  labels: [skill, knowledge]}
+  - {name: sel_union_fnc_minilm_idf,      type: entity, extractor: *ufnc,  backbone: minilm,     aggregation: idf_weighted, labels: [skill, knowledge]}
+  - {name: sel_union_fnc_jobbert_maxsim,  type: entity, extractor: *ufnc,  backbone: jobbert_v2, aggregation: maxsim_mean,  labels: [skill, knowledge]}
+  - {name: sel_union_fnc_jobbert_idf,     type: entity, extractor: *ufnc,  backbone: jobbert_v2, aggregation: idf_weighted, labels: [skill, knowledge]}
+  - {name: sel_esconc_minilm_maxsim,      type: entity, extractor: *escnc, backbone: minilm,     aggregation: maxsim_mean,  labels: [skill, knowledge]}
+  - {name: sel_esconc_minilm_idf,         type: entity, extractor: *escnc, backbone: minilm,     aggregation: idf_weighted, labels: [skill, knowledge]}
+  - {name: sel_esconc_jobbert_maxsim,     type: entity, extractor: *escnc, backbone: jobbert_v2, aggregation: maxsim_mean,  labels: [skill, knowledge]}
+  - {name: sel_esconc_jobbert_idf,        type: entity, extractor: *escnc, backbone: jobbert_v2, aggregation: idf_weighted, labels: [skill, knowledge]}

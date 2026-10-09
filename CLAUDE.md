@@ -84,7 +84,8 @@ Config paths are relative to the repo root. Configs inherit via a top-level `bas
 | 6 | `venv/Scripts/python.exe -m research.experiments.run --config configs/ablations/{entity_types,aggregation,backbone,extractor}.yaml [--subset N]` | done (subset 200) |
 | 6 | `venv/Scripts/python.exe -m research.experiments.nearmiss_sweep --config configs/ablations/nearmiss.yaml [--subset N]` -> results/nearmiss_sweep*.md, results/summaries/figures/ | done (subset 200) |
 | 7 | `venv/Scripts/python.exe -m research.annotation.sample` (250 pairs) / `streamlit run research/annotation/app.py` / `venv/Scripts/python.exe -m research.annotation.agreement` | tool done; awaiting human ratings |
-| 8 | figures/tables: TBD | not started |
+| 8 | `venv/Scripts/python.exe -m research.experiments.run --config configs/selection.yaml` (dev-only selection) | done |
+| 8 | `venv/Scripts/python.exe -m research.analysis.make_all [--set analysis.main_dir=...]` -> results/summaries/{figures,tables}, see research/README.md | done |
 
 Update this table as each phase lands.
 
@@ -152,7 +153,10 @@ Update this table as each phase lands.
   documents via 64-token windows -- a stated limitation.
 - Caches: embeddings (`.cache/embeddings`), pair scores (`.cache/pair_scores`), extracted spans
   (`.cache/extraction`, keyed by extractor spec fingerprint).
-- MAIN METHOD (user decision 2026-10-09, option 1): `entity_li` = union(fine-tuned JobBERT seed13,
+- FINAL MAIN METHOD (user chose "option 1" after Phase 7; selected by the pre-declared dev-only
+  rule in configs/selection.yaml, highest dev nDCG@10 = 0.606): `entity_li` = union(JobBERT ft seed13,
+  ESCO, filtered noun chunks), skill+knowledge labels, JobBERT-v2 entity embeddings, idf_weighted.
+- EARLIER MAIN METHOD (Phases 3-6; still the reference of the Phase 6 ablations): union(fine-tuned JobBERT seed13,
   ESCO) extractor, skill+knowledge labels only, MiniLM, maxsim_mean. Dev (30 pools): 23% pairs
   empty, AUC 0.68 vs full-text MiniLM 0.81; esco+nc / noun-chunk variants 0.77 (Phase 6 ablation).
 - KEY RISK found on dev: fine-tuned extractor finds 0 skill entities in ~51% of BiasBios bios

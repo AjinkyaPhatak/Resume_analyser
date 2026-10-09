@@ -225,7 +225,7 @@ def significance(per_pool: pd.DataFrame, ours: str, conditions: list[str], fair_
 # ------------------------------------------------------------------------------- reporting
 
 def write_summary(path, metrics: pd.DataFrame, tests: pd.DataFrame, tpr: dict, cfg: dict, timings: dict,
-                  conditions: list[str]) -> None:
+                  conditions: list[str], split: str = "test") -> None:
     def fmt(r):
         return "–" if pd.isna(r["value"]) else f"{r['value']:.3f} [{r['ci_low']:.3f}, {r['ci_high']:.3f}]"
 
@@ -237,29 +237,29 @@ def write_summary(path, metrics: pd.DataFrame, tests: pd.DataFrame, tpr: dict, c
     scorers = list(dict.fromkeys(metrics["scorer"]))
     sub = cfg.get("subset")
     lines = [f"# {'PRELIMINARY SMOKE TEST (--subset ' + str(sub) + ' pools per split)' if sub else 'Main results'}", "",
-             "Test pools unless noted. Values: mean over JD pools [95% cluster-bootstrap CI over pools, "
+             f"{split.capitalize()} pools unless noted. Values: mean over JD pools [95% cluster-bootstrap CI over pools, "
              f"{cfg['experiment']['bootstrap']['n']} resamples]. Gaps: |score change| / SD of the pool's original "
              "scores, over CHANGED bios. Signed gaps: + = favours the female-coded (communal / target) version.", "",
-             "## Ranking accuracy (test)", "",
+             f"## Ranking accuracy ({split})", "",
              "| Scorer | nDCG@10 | MRR | P@5 | P@10 | pairs with entities |", "|---|---|---|---|---|---|"]
     for s in scorers:
-        lines.append(f"| {s} | {get(s, 'test', 'original', 'ndcg@10')} | {get(s, 'test', 'original', 'mrr')} | "
-                     f"{get(s, 'test', 'original', 'p@5')} | {get(s, 'test', 'original', 'p@10')} | "
-                     f"{get(s, 'test', 'original', 'frac_nonempty')} |")
+        lines.append(f"| {s} | {get(s, split, 'original', 'ndcg@10')} | {get(s, split, 'original', 'mrr')} | "
+                     f"{get(s, split, 'original', 'p@5')} | {get(s, split, 'original', 'p@10')} | "
+                     f"{get(s, split, 'original', 'frac_nonempty')} |")
     for metric, title in (("abs_gap_norm_changed", "Counterfactual |gap| (normalised, changed bios)"),
                           ("signed_gap_norm_changed", "Signed gap (normalised, changed bios; + favours female/communal/target)"),
                           ("abs_rank_shift_changed", "Mean |rank shift| in the pool (changed bios)")):
         lines += ["", f"## {title}", "", "| Scorer | " + " | ".join(conditions) + " |", "|---|" + "---|" * len(conditions)]
         for s in scorers:
-            lines.append(f"| {s} | " + " | ".join(get(s, "test", c, metric) for c in conditions) + " |")
-    cov = metrics[(metrics.split == "test") & (metrics.condition == "original") & (metrics.metric == "frac_nonempty")]
+            lines.append(f"| {s} | " + " | ".join(get(s, split, c, metric) for c in conditions) + " |")
+    cov = metrics[(metrics.split == split) & (metrics.condition == "original") & (metrics.metric == "frac_nonempty")]
     ent = [s for s in scorers if (cov.loc[cov.scorer == s, "value"] < 1).any()]   # scorers with empty-entity pairs
     if ent:
         lines += ["", "## Entity scorers: |gap| restricted to pairs where both sides have entities", "",
                   "| Scorer | " + " | ".join(conditions) + " |", "|---|" + "---|" * len(conditions)]
         for s in ent:
-            lines.append(f"| {s} | " + " | ".join(get(s, "test", c, "abs_gap_norm_changed_nonempty") for c in conditions) + " |")
-    lines += ["", "## TPR gender gap (threshold chosen on dev; test; TPR_F - TPR_M over JD occupations)", "",
+            lines.append(f"| {s} | " + " | ".join(get(s, split, c, "abs_gap_norm_changed_nonempty") for c in conditions) + " |")
+    lines += ["", "## TPR gender gap (threshold chosen on dev; TPR_F - TPR_M over JD occupations)", "",
               "| Scorer | threshold (z) | mean gap | RMS gap |", "|---|---|---|---|"]
     for s, t in tpr.items():
         lines.append(f"| {s} | {t['threshold']:.2f} | {t['mean'][0]:.3f} [{t['mean'][1]:.3f}, {t['mean'][2]:.3f}] | "
@@ -267,8 +267,8 @@ def write_summary(path, metrics: pd.DataFrame, tests: pd.DataFrame, tpr: dict, c
     lines += ["", "## Top-10 exposure (female share - 0.5; pools are 50/50)", "",
               "| Scorer | top-10 share | discounted exposure |", "|---|---|---|"]
     for s in scorers:
-        lines.append(f"| {s} | {get(s, 'test', 'original', 'topk_female_share_minus_half')} | "
-                     f"{get(s, 'test', 'original', 'exposure_female_share_minus_half')} |")
+        lines.append(f"| {s} | {get(s, split, 'original', 'topk_female_share_minus_half')} | "
+                     f"{get(s, split, 'original', 'exposure_female_share_minus_half')} |")
     if len(tests):
         lines += ["", f"## Paired permutation tests: {cfg['experiment']['our_method']} vs baselines "
                   f"({cfg['experiment']['permutation']['n']} sign flips, Holm within each row family)", "",
@@ -292,10 +292,12 @@ def main(argv=None):
     out_dir = repo_path(cfg["paths"]["results"]) / name
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    splits = list(ecfg.get("splits", ["dev", "test"]))    # ["dev"] for dev-only model selection
+    report_split = "test" if "test" in splits else "dev"
     data = load_inputs(cfg)
-    pools = {s: select_pools(data[f"pools_{s}"], cfg.get("subset"), seed) for s in ("dev", "test")}
-    tables = {s: build_pair_table(pools[s], data[f"pert_{s}"], conditions, ecfg["orientation"]) for s in ("dev", "test")}
-    for s in ("dev", "test"):
+    pools = {s: select_pools(data[f"pools_{s}"], cfg.get("subset"), seed) for s in splits}
+    tables = {s: build_pair_table(pools[s], data[f"pert_{s}"], conditions, ecfg["orientation"]) for s in splits}
+    for s in splits:
         print(f"[{s}] {pools[s]['jd_id'].nunique()} pools, {len(tables[s])} (pair, condition) rows, "
               f"{int((tables[s]['condition'] == 'original').sum() + tables[s]['changed'].sum())} to score", flush=True)
 
@@ -304,16 +306,17 @@ def main(argv=None):
         t0 = time.perf_counter()
         fit_scorer(scorer, data["lexical_corpus"], data["jds"].tolist())
         scored = {}
-        for s in ("dev", "test"):
+        for s in splits:
             scored[s] = score_split(scorer, tables[s], data[f"bios_{s}"], data["jds"], int(ecfg["score_chunk"]))
             pp = per_pool_metrics(scored[s], pools[s], conditions, int(ecfg["exposure_k"]))
             per_pool.append(pp.assign(scorer=scorer.name, split=s))
             all_scores.append(scored[s].drop(columns=["pert_text"]).assign(scorer=scorer.name, split=s))
-        tpr[scorer.name] = tpr_gap_with_ci(scored["dev"], scored["test"], pools["dev"], pools["test"],
-                                           int(ecfg["bootstrap"]["n"]), float(ecfg["bootstrap"]["alpha"]), seed)
+        if {"dev", "test"} <= set(splits):
+            tpr[scorer.name] = tpr_gap_with_ci(scored["dev"], scored["test"], pools["dev"], pools["test"],
+                                               int(ecfg["bootstrap"]["n"]), float(ecfg["bootstrap"]["alpha"]), seed)
         timings[scorer.name] = time.perf_counter() - t0
-        nan = int(scored["test"]["score"].isna().sum())
-        print(f"[done] {scorer.name}: {timings[scorer.name]:.0f}s, NaN scores in test: {nan}", flush=True)
+        nan = int(scored[report_split]["score"].isna().sum())
+        print(f"[done] {scorer.name}: {timings[scorer.name]:.0f}s, NaN scores in {report_split}: {nan}", flush=True)
 
     per_pool = pd.concat(per_pool, ignore_index=True)
     metrics = summarise(per_pool, int(ecfg["bootstrap"]["n"]), float(ecfg["bootstrap"]["alpha"]), seed)
@@ -324,7 +327,7 @@ def main(argv=None):
                                          "metric": f"tpr_gap_{kind}", "value": v, "ci_low": lo, "ci_high": hi,
                                          "n_units": np.nan}
     tests = significance(per_pool, ecfg["our_method"], conditions, ecfg["test_metrics"],
-                         int(ecfg["permutation"]["n"]), seed)
+                         int(ecfg["permutation"]["n"]), seed) if "test" in splits else pd.DataFrame()
 
     pd.concat(all_scores, ignore_index=True).to_parquet(out_dir / "scores.parquet", index=False)
     per_pool.to_parquet(out_dir / "per_pool.parquet", index=False)
@@ -333,7 +336,7 @@ def main(argv=None):
     write_run_metadata(out_dir, cfg, extra={"timings_s": timings, "tpr_thresholds": {k: v["threshold"] for k, v in tpr.items()},
                                             "n_pools": {s: int(pools[s]["jd_id"].nunique()) for s in pools}})
     summary = repo_path(cfg["paths"]["results"]) / f"{name}_summary.md"
-    write_summary(summary, metrics, tests, tpr, cfg, timings, conditions)
+    write_summary(summary, metrics, tests, tpr, cfg, timings, conditions, split=report_split)
     print(summary.read_text(encoding="utf-8"))
 
 
