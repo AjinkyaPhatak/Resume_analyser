@@ -1,8 +1,10 @@
 # CLAUDE.md
 
 This repo has two parts:
-- `backend/` (FastAPI) + `frontend/` (Next.js): the working resume analyser app.
-  **Never modify `frontend/`.** Backend changes must keep endpoints working.
+- `backend/` (FastAPI) + `frontend/` (Next.js): the resume analyser app. Since 2026-10-10 (user
+  request) the app runs the paper's final method and the frontend presents it, including a
+  Research page. Frontend changes are allowed. Backend changes must keep endpoints working
+  and tested.
 - `research/`: the research codebase for a paper (below). All research code lives here.
 
 ## Research claim
@@ -86,8 +88,28 @@ Config paths are relative to the repo root. Configs inherit via a top-level `bas
 | 7 | `venv/Scripts/python.exe -m research.annotation.sample` (250 pairs) / `streamlit run research/annotation/app.py` / `venv/Scripts/python.exe -m research.annotation.agreement` | tool done; awaiting human ratings |
 | 8 | `venv/Scripts/python.exe -m research.experiments.run --config configs/selection.yaml` (dev-only selection) | done |
 | 8 | `venv/Scripts/python.exe -m research.analysis.make_all [--set analysis.main_dir=...]` -> results/summaries/{figures,tables}, see research/README.md | done |
+| app | `venv/Scripts/python.exe -m research.analysis.export_app` -> backend/artifacts/entity_li.json; `... export_web` -> frontend/public/research/ | done |
 
 Update this table as each phase lands.
+
+## Web app (2026-10-10)
+- `backend/app/services/engine.py` imports research code (no re-implementation): `entity_li`
+  from configs/scorers.yaml, the Phase 6 near-miss band (ESCO + MiniLM, 0.65-0.90), and the
+  perturbation conditions for `/analysis/counterfactual` (entity_li vs sbert_minilm vs
+  backend_match, gaps / median DEV pool SD). Research caches are OFF (`persist_cache: false`),
+  so user texts are never written to disk. `layout_to_sentences` ends each line as a sentence
+  (a no-op on research data, which has no line breaks).
+- `backend/artifacts/entity_li.json` <- `python -m research.analysis.export_app` (IDF over pool
+  JDs exactly as run.py, DEV calibration quantiles, DEV pool SDs, near-miss band).
+- `frontend/public/research/{data.json,figures/}` <- `python -m research.analysis.export_web`
+  (final full runs only; refuses subset dirs). Research page: frontend/app/research/page.tsx;
+  charts in frontend/components/charts.tsx (validated palette, colour = scorer family).
+- The old app matcher is kept verbatim in `research/legacy/backend_matcher_60bfe79.py` for the
+  slow `backend_match` parity tests.
+- Bias service: audit bugs fixed (verdict at exactly +-1, hyphenated words, prefix false
+  positives). Word lists are still NOT verified against Gaucher et al. (2011).
+- Run: `venv/Scripts/python.exe -m uvicorn main:app --app-dir backend --port 8000` and
+  `npm --prefix frontend run dev` (also in .claude/launch.json).
 
 ## Phase 8 notes + FINAL RESULTS (full run, 234 test pools; results/main_summary.md)
 - nDCG@10: jobbert_v2 0.716 > sbert_mpnet 0.633 > entity_li (final) 0.619 ~ sbert_minilm 0.602 >
@@ -194,10 +216,10 @@ Update this table as each phase lands.
 - Pools: per JD 100 bios, 10 relevant, gender-balanced (relevant 5F/5M, irrelevant 45F/45M),
   irrelevant occupation drawn uniformly. JDs split 30/70 into dev/test pools (dev for thresholds).
 
-## Known backend state (see research/BACKEND_AUDIT.md)
-- `POST /analysis/match` 500 (commit 60bfe79) fixed in Phase 1: the router maps the
-  service output onto `MatchResponse`; `suggestions` was added as an optional field.
-  Endpoint tests are in `backend/tests/`.
+## Backend history (see research/BACKEND_AUDIT.md)
+- The audit describes the ORIGINAL matcher (commit 60bfe79). Its 500 was fixed in Phase 1; on
+  2026-10-10 the matcher was replaced by the paper's method (see "Web app" above).
+  Endpoint tests: `backend/tests/` (fast with a stub engine; `-m slow` loads real models).
 
 ## Phase 1 notes (extraction)
 - Extractors in `research/extraction/`: `noun_chunk` (faithful port of backend

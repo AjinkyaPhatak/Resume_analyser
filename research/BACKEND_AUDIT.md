@@ -1,5 +1,10 @@
 # Phase 0 audit of the backend matcher and bias services
 
+> **Status (2026-10-10):** this audit describes the app as it was at `60bfe79`. The app now runs
+> the paper's entity-level method (`backend/app/services/engine.py`), the bias-service bugs in
+> section 3 are fixed (the word lists are still unverified), and the audited matcher is kept
+> verbatim in `research/legacy/backend_matcher_60bfe79.py`.
+
 Audited at commit `60bfe79`. Files: `backend/app/services/matcher.py`,
 `backend/app/services/bias.py`, `backend/app/routers/analysis.py`,
 `backend/app/schemas/analysis.py`. Behaviour marked **(verified)** was reproduced by

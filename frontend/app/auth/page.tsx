@@ -50,8 +50,8 @@ export default function AuthPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-gray-900 rounded-2xl p-8 space-y-6">
+    <main className="flex min-h-[70vh] items-center justify-center px-4">
+      <div className="w-full max-w-md space-y-6 rounded-2xl border border-line bg-surface p-8">
         <h1 className="text-2xl font-bold text-center">
           {isLogin ? "Sign In" : "Create Account"}
         </h1>
@@ -59,43 +59,43 @@ export default function AuthPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
             <div>
-              <label className="text-sm text-gray-400">Name</label>
+              <label className="text-sm text-ink-2">Name</label>
               <input
                 name="name"
                 type="text"
                 value={form.name}
                 onChange={handleChange}
                 required
-                className="w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+                className="w-full mt-1 rounded-lg border border-line bg-page px-4 py-2 text-ink focus:border-accent focus:outline-none"
               />
             </div>
           )}
           <div>
-            <label className="text-sm text-gray-400">Email</label>
+            <label className="text-sm text-ink-2">Email</label>
             <input
               name="email"
               type="email"
               value={form.email}
               onChange={handleChange}
               required
-              className="w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+              className="w-full mt-1 rounded-lg border border-line bg-page px-4 py-2 text-ink focus:border-accent focus:outline-none"
             />
           </div>
           <div>
-            <label className="text-sm text-gray-400">Password</label>
+            <label className="text-sm text-ink-2">Password</label>
             <input
               name="password"
               type="password"
               value={form.password}
               onChange={handleChange}
               required
-              className="w-full mt-1 bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+              className="w-full mt-1 rounded-lg border border-line bg-page px-4 py-2 text-ink focus:border-accent focus:outline-none"
             />
           </div>
 
           {error && (
             <p
-              className={`text-sm ${error.includes("created") ? "text-green-400" : "text-red-400"}`}
+              className={`text-sm ${error.includes("created") ? "text-good" : "text-critical"}`}
             >
               {error}
             </p>
@@ -104,20 +104,20 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white py-2 rounded-lg font-medium transition"
+            className="w-full bg-accent hover:opacity-90 disabled:opacity-50 text-white py-2 rounded-lg font-medium transition"
           >
             {loading ? "Please wait..." : isLogin ? "Sign In" : "Register"}
           </button>
         </form>
 
-        <p className="text-center text-gray-400 text-sm">
+        <p className="text-center text-ink-2 text-sm">
           {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
           <button
             onClick={() => {
               setIsLogin(!isLogin);
               setError("");
             }}
-            className="text-blue-400 hover:underline"
+            className="text-accent-ink hover:underline"
           >
             {isLogin ? "Register" : "Sign In"}
           </button>

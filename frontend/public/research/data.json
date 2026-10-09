@@ -1,0 +1,4034 @@
+{
+ "generated_utc": "2026-10-09T19:10:06+00:00",
+ "main_run": {
+  "commit": "667fe64a878c4ac0e73b610628baf360a493675f",
+  "timestamp_utc": "2026-10-09T17:55:36+00:00"
+ },
+ "scorers": [
+  {
+   "id": "bm25",
+   "label": "BM25",
+   "family": "lexical",
+   "description": "Okapi BM25 over words (stop-words incl. pronouns removed)"
+  },
+  {
+   "id": "tfidf",
+   "label": "TF-IDF",
+   "family": "lexical",
+   "description": "TF-IDF cosine over words (same stop-words)"
+  },
+  {
+   "id": "sbert_minilm",
+   "label": "MiniLM",
+   "family": "full-text",
+   "description": "all-MiniLM-L6-v2 embedding of the whole text"
+  },
+  {
+   "id": "sbert_mpnet",
+   "label": "MPNet",
+   "family": "full-text",
+   "description": "all-mpnet-base-v2 embedding of the whole text"
+  },
+  {
+   "id": "jobbert_v2",
+   "label": "JobBERT-v2",
+   "family": "full-text",
+   "description": "TechWolf/JobBERT-v2 embedding of the whole text (64-token windows)"
+  },
+  {
+   "id": "cross_encoder",
+   "label": "Cross-encoder",
+   "family": "full-text",
+   "description": "ms-marco-MiniLM-L6-v2 reading resume and JD together"
+  },
+  {
+   "id": "backend_match",
+   "label": "Old app matcher",
+   "family": "legacy",
+   "description": "This app's original matcher: noun chunks, MiniLM, share of JD entities \u2265 0.55"
+  },
+  {
+   "id": "entity_li",
+   "label": "Entity LI (ours)",
+   "family": "entity",
+   "description": "Skill entities (JobBERT tagger + ESCO + noun chunks), JobBERT-v2, IDF-weighted MaxSim"
+  }
+ ],
+ "conditions": [
+  {
+   "id": "pronoun_swap",
+   "label": "Pronoun swap"
+  },
+  {
+   "id": "name_swap_us",
+   "label": "Name swap (US)"
+  },
+  {
+   "id": "name_swap_in",
+   "label": "Name swap (Indian)"
+  },
+  {
+   "id": "name_in_same_gender",
+   "label": "Indian name, same gender"
+  },
+  {
+   "id": "affiliation_swap",
+   "label": "Affiliation swap"
+  },
+  {
+   "id": "agentic_communal",
+   "label": "Agentic \u2192 communal"
+  },
+  {
+   "id": "gender_full",
+   "label": "Full gender flip"
+  }
+ ],
+ "main": {
+  "ranking": {
+   "bm25": {
+    "ndcg@10": [
+     0.540566,
+     0.513574,
+     0.569687
+    ],
+    "mrr": [
+     0.799285,
+     0.759261,
+     0.838479
+    ],
+    "p@5": [
+     0.582051,
+     0.546132,
+     0.621368
+    ],
+    "p@10": [
+     0.441239,
+     0.416667,
+     0.468803
+    ]
+   },
+   "tfidf": {
+    "ndcg@10": [
+     0.51767,
+     0.493555,
+     0.543121
+    ],
+    "mrr": [
+     0.791315,
+     0.752533,
+     0.830326
+    ],
+    "p@5": [
+     0.554701,
+     0.517949,
+     0.58891
+    ],
+    "p@10": [
+     0.420513,
+     0.398291,
+     0.445299
+    ]
+   },
+   "sbert_minilm": {
+    "ndcg@10": [
+     0.602491,
+     0.574091,
+     0.6315
+    ],
+    "mrr": [
+     0.836258,
+     0.79913,
+     0.87393
+    ],
+    "p@5": [
+     0.635043,
+     0.598291,
+     0.673547
+    ],
+    "p@10": [
+     0.497863,
+     0.471368,
+     0.526068
+    ]
+   },
+   "sbert_mpnet": {
+    "ndcg@10": [
+     0.633415,
+     0.605673,
+     0.661003
+    ],
+    "mrr": [
+     0.858505,
+     0.821737,
+     0.892574
+    ],
+    "p@5": [
+     0.649573,
+     0.61453,
+     0.686346
+    ],
+    "p@10": [
+     0.535043,
+     0.509391,
+     0.560267
+    ]
+   },
+   "jobbert_v2": {
+    "ndcg@10": [
+     0.716465,
+     0.692349,
+     0.739195
+    ],
+    "mrr": [
+     0.906997,
+     0.877104,
+     0.933329
+    ],
+    "p@5": [
+     0.742735,
+     0.711111,
+     0.773504
+    ],
+    "p@10": [
+     0.613248,
+     0.588878,
+     0.63719
+    ]
+   },
+   "cross_encoder": {
+    "ndcg@10": [
+     0.400922,
+     0.374812,
+     0.426901
+    ],
+    "mrr": [
+     0.656887,
+     0.608593,
+     0.700736
+    ],
+    "p@5": [
+     0.406838,
+     0.371795,
+     0.441026
+    ],
+    "p@10": [
+     0.322222,
+     0.299145,
+     0.345321
+    ]
+   },
+   "backend_match": {
+    "ndcg@10": [
+     0.535082,
+     0.508116,
+     0.56339
+    ],
+    "mrr": [
+     0.793357,
+     0.751074,
+     0.833252
+    ],
+    "p@5": [
+     0.552326,
+     0.51858,
+     0.587763
+    ],
+    "p@10": [
+     0.437975,
+     0.414193,
+     0.462615
+    ]
+   },
+   "entity_li": {
+    "ndcg@10": [
+     0.618578,
+     0.592485,
+     0.644358
+    ],
+    "mrr": [
+     0.842719,
+     0.80512,
+     0.87915
+    ],
+    "p@5": [
+     0.641026,
+     0.607692,
+     0.676068
+    ],
+    "p@10": [
+     0.518376,
+     0.492735,
+     0.545299
+    ]
+   }
+  },
+  "abs_gap": {
+   "bm25": {
+    "pronoun_swap": [
+     0.000413,
+     0.000143,
+     0.000784
+    ],
+    "name_swap_us": [
+     0.001866,
+     0.000705,
+     0.003118
+    ],
+    "name_swap_in": [
+     0.001089,
+     0.000229,
+     0.002226
+    ],
+    "name_in_same_gender": [
+     0.001089,
+     0.000229,
+     0.002226
+    ],
+    "affiliation_swap": [
+     0.04707,
+     0.011468,
+     0.097704
+    ],
+    "agentic_communal": [
+     0.055548,
+     0.041781,
+     0.072097
+    ],
+    "gender_full": [
+     0.000752,
+     0.000412,
+     0.001157
+    ]
+   },
+   "tfidf": {
+    "pronoun_swap": [
+     0.000838,
+     0.000472,
+     0.001337
+    ],
+    "name_swap_us": [
+     0.019343,
+     0.017342,
+     0.021478
+    ],
+    "name_swap_in": [
+     0.032105,
+     0.030049,
+     0.034374
+    ],
+    "name_in_same_gender": [
+     0.031642,
+     0.029443,
+     0.033968
+    ],
+    "affiliation_swap": [
+     0.061713,
+     0.021641,
+     0.114882
+    ],
+    "agentic_communal": [
+     0.070646,
+     0.054752,
+     0.089717
+    ],
+    "gender_full": [
+     0.004769,
+     0.004245,
+     0.00537
+    ]
+   },
+   "sbert_minilm": {
+    "pronoun_swap": [
+     0.135495,
+     0.12483,
+     0.146464
+    ],
+    "name_swap_us": [
+     0.280298,
+     0.270317,
+     0.290244
+    ],
+    "name_swap_in": [
+     0.294004,
+     0.282662,
+     0.304912
+    ],
+    "name_in_same_gender": [
+     0.284336,
+     0.27423,
+     0.294456
+    ],
+    "affiliation_swap": [
+     0.067689,
+     0.052417,
+     0.084696
+    ],
+    "agentic_communal": [
+     0.044922,
+     0.039453,
+     0.051178
+    ],
+    "gender_full": [
+     0.18062,
+     0.169407,
+     0.191588
+    ]
+   },
+   "sbert_mpnet": {
+    "pronoun_swap": [
+     0.117268,
+     0.10928,
+     0.125615
+    ],
+    "name_swap_us": [
+     0.215772,
+     0.207416,
+     0.22375
+    ],
+    "name_swap_in": [
+     0.233261,
+     0.224445,
+     0.24153
+    ],
+    "name_in_same_gender": [
+     0.227152,
+     0.218491,
+     0.235109
+    ],
+    "affiliation_swap": [
+     0.076067,
+     0.054946,
+     0.100671
+    ],
+    "agentic_communal": [
+     0.046405,
+     0.041604,
+     0.051614
+    ],
+    "gender_full": [
+     0.149194,
+     0.140546,
+     0.158587
+    ]
+   },
+   "jobbert_v2": {
+    "pronoun_swap": [
+     0.107103,
+     0.100077,
+     0.11389
+    ],
+    "name_swap_us": [
+     0.134958,
+     0.129282,
+     0.140931
+    ],
+    "name_swap_in": [
+     0.189306,
+     0.182317,
+     0.196107
+    ],
+    "name_in_same_gender": [
+     0.187987,
+     0.180427,
+     0.195275
+    ],
+    "affiliation_swap": [
+     0.056955,
+     0.034597,
+     0.088265
+    ],
+    "agentic_communal": [
+     0.058289,
+     0.052354,
+     0.064899
+    ],
+    "gender_full": [
+     0.125518,
+     0.118353,
+     0.132364
+    ]
+   },
+   "cross_encoder": {
+    "pronoun_swap": [
+     0.103338,
+     0.096337,
+     0.111261
+    ],
+    "name_swap_us": [
+     0.155677,
+     0.148778,
+     0.163468
+    ],
+    "name_swap_in": [
+     0.2119,
+     0.203837,
+     0.220663
+    ],
+    "name_in_same_gender": [
+     0.203056,
+     0.194939,
+     0.211432
+    ],
+    "affiliation_swap": [
+     0.108356,
+     0.083053,
+     0.138115
+    ],
+    "agentic_communal": [
+     0.058392,
+     0.051374,
+     0.067015
+    ],
+    "gender_full": [
+     0.120932,
+     0.113768,
+     0.128868
+    ]
+   },
+   "backend_match": {
+    "pronoun_swap": [
+     0.271958,
+     0.239338,
+     0.301381
+    ],
+    "name_swap_us": [
+     0.008274,
+     0.006301,
+     0.010276
+    ],
+    "name_swap_in": [
+     0.010272,
+     0.007934,
+     0.012583
+    ],
+    "name_in_same_gender": [
+     0.007363,
+     0.005702,
+     0.009263
+    ],
+    "affiliation_swap": [
+     0.069342,
+     0.035439,
+     0.105754
+    ],
+    "agentic_communal": [
+     0.051388,
+     0.037415,
+     0.0667
+    ],
+    "gender_full": [
+     0.271608,
+     0.239245,
+     0.300638
+    ]
+   },
+   "entity_li": {
+    "pronoun_swap": [
+     0.022267,
+     0.021205,
+     0.02349
+    ],
+    "name_swap_us": [
+     0.05781,
+     0.054274,
+     0.061907
+    ],
+    "name_swap_in": [
+     0.0638,
+     0.060615,
+     0.067232
+    ],
+    "name_in_same_gender": [
+     0.058481,
+     0.055226,
+     0.062045
+    ],
+    "affiliation_swap": [
+     0.045603,
+     0.029816,
+     0.064807
+    ],
+    "agentic_communal": [
+     0.066442,
+     0.056498,
+     0.075752
+    ],
+    "gender_full": [
+     0.032909,
+     0.031477,
+     0.034522
+    ]
+   }
+  },
+  "signed_gap": {
+   "bm25": {
+    "pronoun_swap": [
+     0.000413,
+     0.000143,
+     0.000784
+    ],
+    "name_swap_us": [
+     -0.000519,
+     -0.001798,
+     0.000659
+    ],
+    "name_swap_in": [
+     -0.00059,
+     -0.001656,
+     0.000244
+    ],
+    "name_in_same_gender": [
+     -0.001089,
+     -0.002226,
+     -0.000229
+    ],
+    "affiliation_swap": [
+     -0.030194,
+     -0.085169,
+     0.009546
+    ],
+    "agentic_communal": [
+     0.018078,
+     0.003666,
+     0.034687
+    ],
+    "gender_full": [
+     0.000307,
+     -5.4e-05,
+     0.000717
+    ]
+   },
+   "tfidf": {
+    "pronoun_swap": [
+     0.000724,
+     0.000359,
+     0.001225
+    ],
+    "name_swap_us": [
+     -0.006781,
+     -0.009061,
+     -0.004741
+    ],
+    "name_swap_in": [
+     -0.001482,
+     -0.003776,
+     0.000829
+    ],
+    "name_in_same_gender": [
+     -0.021566,
+     -0.023917,
+     -0.019426
+    ],
+    "affiliation_swap": [
+     -0.038973,
+     -0.093957,
+     0.004659
+    ],
+    "agentic_communal": [
+     0.020571,
+     0.002939,
+     0.040014
+    ],
+    "gender_full": [
+     -0.000738,
+     -0.001335,
+     -0.000119
+    ]
+   },
+   "sbert_minilm": {
+    "pronoun_swap": [
+     0.093822,
+     0.078133,
+     0.109703
+    ],
+    "name_swap_us": [
+     0.028021,
+     0.011932,
+     0.042672
+    ],
+    "name_swap_in": [
+     0.051389,
+     0.038046,
+     0.065267
+    ],
+    "name_in_same_gender": [
+     0.009459,
+     -0.006679,
+     0.025097
+    ],
+    "affiliation_swap": [
+     -0.045206,
+     -0.065325,
+     -0.024675
+    ],
+    "agentic_communal": [
+     0.02145,
+     0.014729,
+     0.028077
+    ],
+    "gender_full": [
+     0.099301,
+     0.081424,
+     0.117721
+    ]
+   },
+   "sbert_mpnet": {
+    "pronoun_swap": [
+     0.08667,
+     0.075028,
+     0.097705
+    ],
+    "name_swap_us": [
+     0.05149,
+     0.040435,
+     0.062717
+    ],
+    "name_swap_in": [
+     0.015064,
+     0.004263,
+     0.025637
+    ],
+    "name_in_same_gender": [
+     -0.075325,
+     -0.088783,
+     -0.061872
+    ],
+    "affiliation_swap": [
+     -0.046996,
+     -0.074048,
+     -0.020001
+    ],
+    "agentic_communal": [
+     0.003514,
+     -0.002506,
+     0.01048
+    ],
+    "gender_full": [
+     0.096722,
+     0.083707,
+     0.109258
+    ]
+   },
+   "jobbert_v2": {
+    "pronoun_swap": [
+     0.045149,
+     0.032788,
+     0.057088
+    ],
+    "name_swap_us": [
+     0.026472,
+     0.018673,
+     0.033497
+    ],
+    "name_swap_in": [
+     0.020581,
+     0.012944,
+     0.028425
+    ],
+    "name_in_same_gender": [
+     -0.007352,
+     -0.018243,
+     0.002111
+    ],
+    "affiliation_swap": [
+     0.013732,
+     -0.014185,
+     0.048998
+    ],
+    "agentic_communal": [
+     0.036314,
+     0.028238,
+     0.044385
+    ],
+    "gender_full": [
+     0.049213,
+     0.036285,
+     0.062056
+    ]
+   },
+   "cross_encoder": {
+    "pronoun_swap": [
+     -0.039697,
+     -0.053102,
+     -0.026976
+    ],
+    "name_swap_us": [
+     0.024286,
+     0.016569,
+     0.032642
+    ],
+    "name_swap_in": [
+     0.032296,
+     0.024176,
+     0.040884
+    ],
+    "name_in_same_gender": [
+     0.093485,
+     0.085624,
+     0.102802
+    ],
+    "affiliation_swap": [
+     -0.075331,
+     -0.110555,
+     -0.042239
+    ],
+    "agentic_communal": [
+     -0.015845,
+     -0.025775,
+     -0.00537
+    ],
+    "gender_full": [
+     -0.036563,
+     -0.050431,
+     -0.023306
+    ]
+   },
+   "backend_match": {
+    "pronoun_swap": [
+     0.25861,
+     0.225347,
+     0.289941
+    ],
+    "name_swap_us": [
+     -0.0002,
+     -0.002208,
+     0.001761
+    ],
+    "name_swap_in": [
+     -0.000623,
+     -0.003057,
+     0.0017
+    ],
+    "name_in_same_gender": [
+     -0.002112,
+     -0.00407,
+     -0.000354
+    ],
+    "affiliation_swap": [
+     -0.047115,
+     -0.086579,
+     -0.008542
+    ],
+    "agentic_communal": [
+     0.026465,
+     0.011465,
+     0.04195
+    ],
+    "gender_full": [
+     0.257504,
+     0.224143,
+     0.288702
+    ]
+   },
+   "entity_li": {
+    "pronoun_swap": [
+     -0.006931,
+     -0.007989,
+     -0.00585
+    ],
+    "name_swap_us": [
+     0.007861,
+     0.004255,
+     0.011571
+    ],
+    "name_swap_in": [
+     0.008074,
+     0.004505,
+     0.011854
+    ],
+    "name_in_same_gender": [
+     0.003824,
+     -0.000283,
+     0.007693
+    ],
+    "affiliation_swap": [
+     -0.016048,
+     -0.037202,
+     0.003807
+    ],
+    "agentic_communal": [
+     -0.046352,
+     -0.057389,
+     -0.0362
+    ],
+    "gender_full": [
+     -0.005154,
+     -0.006405,
+     -0.003737
+    ]
+   }
+  },
+  "rank_shift": {
+   "bm25": {
+    "pronoun_swap": [
+     0.016437,
+     0.005444,
+     0.031589
+    ],
+    "name_swap_us": [
+     0.055686,
+     0.020806,
+     0.097595
+    ],
+    "name_swap_in": [
+     0.030982,
+     0.002767,
+     0.066716
+    ],
+    "name_in_same_gender": [
+     0.030982,
+     0.002767,
+     0.066716
+    ],
+    "affiliation_swap": [
+     1.54902,
+     0.215686,
+     3.294608
+    ],
+    "agentic_communal": [
+     1.658943,
+     1.221928,
+     2.19439
+    ],
+    "gender_full": [
+     0.026343,
+     0.013726,
+     0.041799
+    ]
+   },
+   "tfidf": {
+    "pronoun_swap": [
+     0.027182,
+     0.013992,
+     0.044905
+    ],
+    "name_swap_us": [
+     0.424217,
+     0.373271,
+     0.481497
+    ],
+    "name_swap_in": [
+     0.733149,
+     0.673211,
+     0.792339
+    ],
+    "name_in_same_gender": [
+     0.705554,
+     0.652775,
+     0.764004
+    ],
+    "affiliation_swap": [
+     1.771242,
+     0.42451,
+     3.54902
+    ],
+    "agentic_communal": [
+     2.105439,
+     1.557672,
+     2.702306
+    ],
+    "gender_full": [
+     0.113338,
+     0.096677,
+     0.133876
+    ]
+   },
+   "sbert_minilm": {
+    "pronoun_swap": [
+     3.890068,
+     3.589298,
+     4.213285
+    ],
+    "name_swap_us": [
+     8.086166,
+     7.766105,
+     8.433649
+    ],
+    "name_swap_in": [
+     8.533967,
+     8.204393,
+     8.860064
+    ],
+    "name_in_same_gender": [
+     8.192473,
+     7.871208,
+     8.483659
+    ],
+    "affiliation_swap": [
+     2.094771,
+     1.352941,
+     3.036029
+    ],
+    "agentic_communal": [
+     1.22286,
+     1.034235,
+     1.422978
+    ],
+    "gender_full": [
+     5.195567,
+     4.866203,
+     5.525899
+    ]
+   },
+   "sbert_mpnet": {
+    "pronoun_swap": [
+     3.45593,
+     3.226201,
+     3.713015
+    ],
+    "name_swap_us": [
+     6.402217,
+     6.144639,
+     6.670414
+    ],
+    "name_swap_in": [
+     6.871293,
+     6.566155,
+     7.142427
+    ],
+    "name_in_same_gender": [
+     6.772714,
+     6.492805,
+     7.045014
+    ],
+    "affiliation_swap": [
+     2.130719,
+     1.264461,
+     3.153595
+    ],
+    "agentic_communal": [
+     1.244629,
+     1.074209,
+     1.422329
+    ],
+    "gender_full": [
+     4.424194,
+     4.181144,
+     4.707737
+    ]
+   },
+   "jobbert_v2": {
+    "pronoun_swap": [
+     3.456883,
+     3.223513,
+     3.659203
+    ],
+    "name_swap_us": [
+     4.303721,
+     4.123881,
+     4.491068
+    ],
+    "name_swap_in": [
+     6.032938,
+     5.783667,
+     6.276747
+    ],
+    "name_in_same_gender": [
+     6.012942,
+     5.767992,
+     6.274829
+    ],
+    "affiliation_swap": [
+     1.473856,
+     0.921569,
+     2.084967
+    ],
+    "agentic_communal": [
+     1.741614,
+     1.515791,
+     1.991741
+    ],
+    "gender_full": [
+     4.053828,
+     3.817402,
+     4.264668
+    ]
+   },
+   "cross_encoder": {
+    "pronoun_swap": [
+     3.195232,
+     2.965088,
+     3.447347
+    ],
+    "name_swap_us": [
+     4.449933,
+     4.239285,
+     4.669855
+    ],
+    "name_swap_in": [
+     6.240402,
+     5.977595,
+     6.528167
+    ],
+    "name_in_same_gender": [
+     5.91674,
+     5.655788,
+     6.182461
+    ],
+    "affiliation_swap": [
+     2.480392,
+     1.578431,
+     3.539461
+    ],
+    "agentic_communal": [
+     1.665221,
+     1.482885,
+     1.864334
+    ],
+    "gender_full": [
+     3.681295,
+     3.459735,
+     3.932109
+    ]
+   },
+   "backend_match": {
+    "pronoun_swap": [
+     10.119079,
+     9.051232,
+     11.127472
+    ],
+    "name_swap_us": [
+     0.225511,
+     0.163913,
+     0.287689
+    ],
+    "name_swap_in": [
+     0.275021,
+     0.211811,
+     0.338267
+    ],
+    "name_in_same_gender": [
+     0.207103,
+     0.15399,
+     0.266
+    ],
+    "affiliation_swap": [
+     1.96732,
+     0.893709,
+     3.31875
+    ],
+    "agentic_communal": [
+     1.345194,
+     0.988281,
+     1.752707
+    ],
+    "gender_full": [
+     10.100926,
+     9.046188,
+     11.103151
+    ]
+   },
+   "entity_li": {
+    "pronoun_swap": [
+     0.650102,
+     0.615437,
+     0.68666
+    ],
+    "name_swap_us": [
+     1.773863,
+     1.642764,
+     1.920264
+    ],
+    "name_swap_in": [
+     1.905898,
+     1.791611,
+     2.020146
+    ],
+    "name_in_same_gender": [
+     1.696886,
+     1.591476,
+     1.80152
+    ],
+    "affiliation_swap": [
+     1.5,
+     0.898611,
+     2.235621
+    ],
+    "agentic_communal": [
+     1.97274,
+     1.668327,
+     2.26208
+    ],
+    "gender_full": [
+     0.979071,
+     0.930795,
+     1.031155
+    ]
+   }
+  },
+  "abs_gap_nonempty": {
+   "bm25": {
+    "pronoun_swap": [
+     0.000413,
+     0.000143,
+     0.000784
+    ],
+    "name_swap_us": [
+     0.001866,
+     0.000705,
+     0.003118
+    ],
+    "name_swap_in": [
+     0.001089,
+     0.000229,
+     0.002226
+    ],
+    "name_in_same_gender": [
+     0.001089,
+     0.000229,
+     0.002226
+    ],
+    "affiliation_swap": [
+     0.04707,
+     0.011468,
+     0.097704
+    ],
+    "agentic_communal": [
+     0.055548,
+     0.041781,
+     0.072097
+    ],
+    "gender_full": [
+     0.000752,
+     0.000412,
+     0.001157
+    ]
+   },
+   "tfidf": {
+    "pronoun_swap": [
+     0.000838,
+     0.000472,
+     0.001337
+    ],
+    "name_swap_us": [
+     0.019343,
+     0.017342,
+     0.021478
+    ],
+    "name_swap_in": [
+     0.032105,
+     0.030049,
+     0.034374
+    ],
+    "name_in_same_gender": [
+     0.031642,
+     0.029443,
+     0.033968
+    ],
+    "affiliation_swap": [
+     0.061713,
+     0.021641,
+     0.114882
+    ],
+    "agentic_communal": [
+     0.070646,
+     0.054752,
+     0.089717
+    ],
+    "gender_full": [
+     0.004769,
+     0.004245,
+     0.00537
+    ]
+   },
+   "sbert_minilm": {
+    "pronoun_swap": [
+     0.135495,
+     0.12483,
+     0.146464
+    ],
+    "name_swap_us": [
+     0.280298,
+     0.270317,
+     0.290244
+    ],
+    "name_swap_in": [
+     0.294004,
+     0.282662,
+     0.304912
+    ],
+    "name_in_same_gender": [
+     0.284336,
+     0.27423,
+     0.294456
+    ],
+    "affiliation_swap": [
+     0.067689,
+     0.052417,
+     0.084696
+    ],
+    "agentic_communal": [
+     0.044922,
+     0.039453,
+     0.051178
+    ],
+    "gender_full": [
+     0.18062,
+     0.169407,
+     0.191588
+    ]
+   },
+   "sbert_mpnet": {
+    "pronoun_swap": [
+     0.117268,
+     0.10928,
+     0.125615
+    ],
+    "name_swap_us": [
+     0.215772,
+     0.207416,
+     0.22375
+    ],
+    "name_swap_in": [
+     0.233261,
+     0.224445,
+     0.24153
+    ],
+    "name_in_same_gender": [
+     0.227152,
+     0.218491,
+     0.235109
+    ],
+    "affiliation_swap": [
+     0.076067,
+     0.054946,
+     0.100671
+    ],
+    "agentic_communal": [
+     0.046405,
+     0.041604,
+     0.051614
+    ],
+    "gender_full": [
+     0.149194,
+     0.140546,
+     0.158587
+    ]
+   },
+   "jobbert_v2": {
+    "pronoun_swap": [
+     0.107103,
+     0.100077,
+     0.11389
+    ],
+    "name_swap_us": [
+     0.134958,
+     0.129282,
+     0.140931
+    ],
+    "name_swap_in": [
+     0.189306,
+     0.182317,
+     0.196107
+    ],
+    "name_in_same_gender": [
+     0.187987,
+     0.180427,
+     0.195275
+    ],
+    "affiliation_swap": [
+     0.056955,
+     0.034597,
+     0.088265
+    ],
+    "agentic_communal": [
+     0.058289,
+     0.052354,
+     0.064899
+    ],
+    "gender_full": [
+     0.125518,
+     0.118353,
+     0.132364
+    ]
+   },
+   "cross_encoder": {
+    "pronoun_swap": [
+     0.103338,
+     0.096337,
+     0.111261
+    ],
+    "name_swap_us": [
+     0.155677,
+     0.148778,
+     0.163468
+    ],
+    "name_swap_in": [
+     0.2119,
+     0.203837,
+     0.220663
+    ],
+    "name_in_same_gender": [
+     0.203056,
+     0.194939,
+     0.211432
+    ],
+    "affiliation_swap": [
+     0.108356,
+     0.083053,
+     0.138115
+    ],
+    "agentic_communal": [
+     0.058392,
+     0.051374,
+     0.067015
+    ],
+    "gender_full": [
+     0.120932,
+     0.113768,
+     0.128868
+    ]
+   },
+   "backend_match": {
+    "pronoun_swap": [
+     0.271958,
+     0.239338,
+     0.301381
+    ],
+    "name_swap_us": [
+     0.008274,
+     0.006301,
+     0.010276
+    ],
+    "name_swap_in": [
+     0.010272,
+     0.007934,
+     0.012583
+    ],
+    "name_in_same_gender": [
+     0.007363,
+     0.005702,
+     0.009263
+    ],
+    "affiliation_swap": [
+     0.069342,
+     0.035439,
+     0.105754
+    ],
+    "agentic_communal": [
+     0.051388,
+     0.037415,
+     0.0667
+    ],
+    "gender_full": [
+     0.271608,
+     0.239245,
+     0.300638
+    ]
+   },
+   "entity_li": {
+    "pronoun_swap": [
+     0.022267,
+     0.021205,
+     0.02349
+    ],
+    "name_swap_us": [
+     0.05781,
+     0.054274,
+     0.061907
+    ],
+    "name_swap_in": [
+     0.0638,
+     0.060615,
+     0.067232
+    ],
+    "name_in_same_gender": [
+     0.058481,
+     0.055226,
+     0.062045
+    ],
+    "affiliation_swap": [
+     0.045603,
+     0.029816,
+     0.064807
+    ],
+    "agentic_communal": [
+     0.066442,
+     0.056498,
+     0.075752
+    ],
+    "gender_full": [
+     0.032909,
+     0.031477,
+     0.034522
+    ]
+   }
+  },
+  "tpr_gap_mean": {
+   "bm25": [
+    0.008783,
+    -0.031846,
+    0.046123
+   ],
+   "tfidf": [
+    0.030529,
+    -0.009448,
+    0.070053
+   ],
+   "sbert_minilm": [
+    0.063069,
+    0.02591,
+    0.101988
+   ],
+   "sbert_mpnet": [
+    0.056631,
+    0.017388,
+    0.100745
+   ],
+   "jobbert_v2": [
+    0.017531,
+    -0.020891,
+    0.055194
+   ],
+   "cross_encoder": [
+    0.013369,
+    -0.021715,
+    0.049112
+   ],
+   "backend_match": [
+    0.052222,
+    0.016995,
+    0.089579
+   ],
+   "entity_li": [
+    0.008695,
+    -0.030379,
+    0.048586
+   ]
+  },
+  "tpr_gap_rms": {
+   "bm25": 0.131015,
+   "tfidf": 0.122516,
+   "sbert_minilm": 0.1359,
+   "sbert_mpnet": 0.133596,
+   "jobbert_v2": 0.134421,
+   "cross_encoder": 0.068421,
+   "backend_match": 0.11957,
+   "entity_li": 0.08308
+  },
+  "exposure": {
+   "bm25": [
+    0.018803,
+    -0.000427,
+    0.036752
+   ],
+   "tfidf": [
+    0.019658,
+    -0.001282,
+    0.038034
+   ],
+   "sbert_minilm": [
+    0.062821,
+    0.045299,
+    0.080769
+   ],
+   "sbert_mpnet": [
+    0.058974,
+    0.042297,
+    0.075641
+   ],
+   "jobbert_v2": [
+    0.013675,
+    -0.003002,
+    0.030342
+   ],
+   "cross_encoder": [
+    -0.002137,
+    -0.02266,
+    0.016667
+   ],
+   "backend_match": [
+    0.081667,
+    0.063098,
+    0.100538
+   ],
+   "entity_li": [
+    0.010256,
+    -0.005128,
+    0.025641
+   ]
+  },
+  "frac_nonempty": {
+   "bm25": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "tfidf": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "sbert_minilm": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "sbert_mpnet": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "jobbert_v2": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "cross_encoder": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "backend_match": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "entity_li": [
+    1.0,
+    1.0,
+    1.0
+   ]
+  },
+  "dev_ranking": {
+   "bm25": {
+    "ndcg@10": [
+     0.526062,
+     0.484892,
+     0.567539
+    ]
+   },
+   "tfidf": {
+    "ndcg@10": [
+     0.508166,
+     0.468734,
+     0.546227
+    ]
+   },
+   "sbert_minilm": {
+    "ndcg@10": [
+     0.589579,
+     0.544691,
+     0.631509
+    ]
+   },
+   "sbert_mpnet": {
+    "ndcg@10": [
+     0.613547,
+     0.573131,
+     0.652771
+    ]
+   },
+   "jobbert_v2": {
+    "ndcg@10": [
+     0.688136,
+     0.649185,
+     0.726706
+    ]
+   },
+   "cross_encoder": {
+    "ndcg@10": [
+     0.386287,
+     0.347434,
+     0.424174
+    ]
+   },
+   "backend_match": {
+    "ndcg@10": [
+     0.537972,
+     0.495365,
+     0.575481
+    ]
+   },
+   "entity_li": {
+    "ndcg@10": [
+     0.605749,
+     0.566396,
+     0.6422
+    ]
+   }
+  },
+  "tests": [
+   {
+    "condition": "original",
+    "metric": "ndcg@10",
+    "baseline": "backend_match",
+    "mean_diff": 0.0835,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "original",
+    "metric": "ndcg@10",
+    "baseline": "bm25",
+    "mean_diff": 0.078,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "original",
+    "metric": "ndcg@10",
+    "baseline": "cross_encoder",
+    "mean_diff": 0.2177,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "original",
+    "metric": "ndcg@10",
+    "baseline": "jobbert_v2",
+    "mean_diff": -0.0979,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "original",
+    "metric": "ndcg@10",
+    "baseline": "sbert_minilm",
+    "mean_diff": 0.0161,
+    "p_holm": 0.3855614438556144,
+    "n": 234
+   },
+   {
+    "condition": "original",
+    "metric": "ndcg@10",
+    "baseline": "sbert_mpnet",
+    "mean_diff": -0.0148,
+    "p_holm": 0.3855614438556144,
+    "n": 234
+   },
+   {
+    "condition": "original",
+    "metric": "ndcg@10",
+    "baseline": "tfidf",
+    "mean_diff": 0.1009,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "pronoun_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "backend_match",
+    "mean_diff": -0.2497,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "pronoun_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "bm25",
+    "mean_diff": 0.0219,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "pronoun_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "cross_encoder",
+    "mean_diff": -0.0811,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "pronoun_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "jobbert_v2",
+    "mean_diff": -0.0848,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "pronoun_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_minilm",
+    "mean_diff": -0.1132,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "pronoun_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_mpnet",
+    "mean_diff": -0.095,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "pronoun_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "tfidf",
+    "mean_diff": 0.0214,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_us",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "backend_match",
+    "mean_diff": 0.0495,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_us",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "bm25",
+    "mean_diff": 0.0559,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_us",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "cross_encoder",
+    "mean_diff": -0.0979,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_us",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "jobbert_v2",
+    "mean_diff": -0.0771,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_us",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_minilm",
+    "mean_diff": -0.2225,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_us",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_mpnet",
+    "mean_diff": -0.158,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_us",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "tfidf",
+    "mean_diff": 0.0385,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_in",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "backend_match",
+    "mean_diff": 0.0535,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_in",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "bm25",
+    "mean_diff": 0.0627,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_in",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "cross_encoder",
+    "mean_diff": -0.1481,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_in",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "jobbert_v2",
+    "mean_diff": -0.1255,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_in",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_minilm",
+    "mean_diff": -0.2302,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_in",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_mpnet",
+    "mean_diff": -0.1695,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_swap_in",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "tfidf",
+    "mean_diff": 0.0317,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_in_same_gender",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "backend_match",
+    "mean_diff": 0.0511,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_in_same_gender",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "bm25",
+    "mean_diff": 0.0574,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_in_same_gender",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "cross_encoder",
+    "mean_diff": -0.1446,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_in_same_gender",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "jobbert_v2",
+    "mean_diff": -0.1295,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_in_same_gender",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_minilm",
+    "mean_diff": -0.2259,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_in_same_gender",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_mpnet",
+    "mean_diff": -0.1687,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "name_in_same_gender",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "tfidf",
+    "mean_diff": 0.0268,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "affiliation_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "backend_match",
+    "mean_diff": -0.0237,
+    "p_holm": 0.7891210878912108,
+    "n": 51
+   },
+   {
+    "condition": "affiliation_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "bm25",
+    "mean_diff": -0.0015,
+    "p_holm": 1.0,
+    "n": 51
+   },
+   {
+    "condition": "affiliation_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "cross_encoder",
+    "mean_diff": -0.0628,
+    "p_holm": 0.0055994400559944,
+    "n": 51
+   },
+   {
+    "condition": "affiliation_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "jobbert_v2",
+    "mean_diff": -0.0114,
+    "p_holm": 1.0,
+    "n": 51
+   },
+   {
+    "condition": "affiliation_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_minilm",
+    "mean_diff": -0.0221,
+    "p_holm": 0.4584541545845416,
+    "n": 51
+   },
+   {
+    "condition": "affiliation_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_mpnet",
+    "mean_diff": -0.0305,
+    "p_holm": 0.2783721627837216,
+    "n": 51
+   },
+   {
+    "condition": "affiliation_swap",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "tfidf",
+    "mean_diff": -0.0161,
+    "p_holm": 1.0,
+    "n": 51
+   },
+   {
+    "condition": "agentic_communal",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "backend_match",
+    "mean_diff": 0.0151,
+    "p_holm": 0.352964703529647,
+    "n": 224
+   },
+   {
+    "condition": "agentic_communal",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "bm25",
+    "mean_diff": 0.0109,
+    "p_holm": 0.6307369263073692,
+    "n": 224
+   },
+   {
+    "condition": "agentic_communal",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "cross_encoder",
+    "mean_diff": 0.0081,
+    "p_holm": 0.6307369263073692,
+    "n": 224
+   },
+   {
+    "condition": "agentic_communal",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "jobbert_v2",
+    "mean_diff": 0.0082,
+    "p_holm": 0.6307369263073692,
+    "n": 224
+   },
+   {
+    "condition": "agentic_communal",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_minilm",
+    "mean_diff": 0.0215,
+    "p_holm": 0.0006999300069993,
+    "n": 224
+   },
+   {
+    "condition": "agentic_communal",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_mpnet",
+    "mean_diff": 0.02,
+    "p_holm": 0.0017998200179982,
+    "n": 224
+   },
+   {
+    "condition": "agentic_communal",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "tfidf",
+    "mean_diff": -0.0042,
+    "p_holm": 0.6307369263073692,
+    "n": 224
+   },
+   {
+    "condition": "gender_full",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "backend_match",
+    "mean_diff": -0.2387,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "gender_full",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "bm25",
+    "mean_diff": 0.0322,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "gender_full",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "cross_encoder",
+    "mean_diff": -0.088,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "gender_full",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "jobbert_v2",
+    "mean_diff": -0.0926,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "gender_full",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_minilm",
+    "mean_diff": -0.1477,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "gender_full",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "sbert_mpnet",
+    "mean_diff": -0.1163,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   },
+   {
+    "condition": "gender_full",
+    "metric": "abs_gap_norm_changed",
+    "baseline": "tfidf",
+    "mean_diff": 0.0281,
+    "p_holm": 0.0006999300069993,
+    "n": 234
+   }
+  ]
+ },
+ "fresh_pools": {
+  "n_fresh": 34,
+  "n_test": 234,
+  "scorers": {
+   "bm25": {
+    "ndcg@10": [
+     0.465402,
+     0.400455,
+     0.527292
+    ],
+    "gender_gap": [
+     0.000652,
+     5.8e-05,
+     0.00139
+    ]
+   },
+   "tfidf": {
+    "ndcg@10": [
+     0.457634,
+     0.397681,
+     0.517022
+    ],
+    "gender_gap": [
+     0.004722,
+     0.003681,
+     0.005855
+    ]
+   },
+   "sbert_minilm": {
+    "ndcg@10": [
+     0.548017,
+     0.478204,
+     0.610754
+    ],
+    "gender_gap": [
+     0.197746,
+     0.169578,
+     0.229034
+    ]
+   },
+   "sbert_mpnet": {
+    "ndcg@10": [
+     0.570763,
+     0.508933,
+     0.63441
+    ],
+    "gender_gap": [
+     0.15936,
+     0.140659,
+     0.177839
+    ]
+   },
+   "jobbert_v2": {
+    "ndcg@10": [
+     0.652484,
+     0.585421,
+     0.709855
+    ],
+    "gender_gap": [
+     0.131858,
+     0.114722,
+     0.152766
+    ]
+   },
+   "cross_encoder": {
+    "ndcg@10": [
+     0.325036,
+     0.263093,
+     0.391299
+    ],
+    "gender_gap": [
+     0.111843,
+     0.095427,
+     0.133074
+    ]
+   },
+   "backend_match": {
+    "ndcg@10": [
+     0.44594,
+     0.375776,
+     0.516834
+    ],
+    "gender_gap": [
+     0.258149,
+     0.186425,
+     0.345196
+    ]
+   },
+   "entity_li": {
+    "ndcg@10": [
+     0.544154,
+     0.472872,
+     0.611189
+    ],
+    "gender_gap": [
+     0.035193,
+     0.030759,
+     0.039894
+    ]
+   }
+  }
+ },
+ "ablations": {
+  "extractor": {
+   "title": "Which skill extractor?",
+   "held_fixed": "MiniLM, MaxSim-mean; only the extractor changes",
+   "rows": [
+    {
+     "id": "ex_noun_chunk",
+     "label": "Noun chunks (old app)",
+     "reference": false,
+     "ndcg@10": [
+      0.47744,
+      0.45157,
+      0.501951
+     ],
+     "frac_nonempty": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.162504,
+       0.153281,
+       0.171154
+      ],
+      "name_swap_us": [
+       0.030969,
+       0.029024,
+       0.032934
+      ],
+      "agentic_communal": [
+       0.050792,
+       0.043798,
+       0.057929
+      ],
+      "gender_full": [
+       0.163516,
+       0.154538,
+       0.171974
+      ]
+     }
+    },
+    {
+     "id": "ex_esco",
+     "label": "ESCO ruler",
+     "reference": false,
+     "ndcg@10": [
+      0.378206,
+      0.345271,
+      0.410216
+     ],
+     "frac_nonempty": [
+      0.694786,
+      0.684016,
+      0.704022
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.000182,
+       3.3e-05,
+       0.000386
+      ],
+      "name_swap_us": [
+       0.007348,
+       0.004889,
+       0.010326
+      ],
+      "agentic_communal": [
+       0.563001,
+       0.498344,
+       0.635446
+      ],
+      "gender_full": [
+       0.001722,
+       0.001164,
+       0.002336
+      ]
+     }
+    },
+    {
+     "id": "ex_jobbert_ft",
+     "label": "Fine-tuned JobBERT",
+     "reference": false,
+     "ndcg@10": [
+      0.324045,
+      0.29862,
+      0.35
+     ],
+     "frac_nonempty": [
+      0.373419,
+      0.363547,
+      0.382182
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.160769,
+       0.155292,
+       0.166608
+      ],
+      "name_swap_us": [
+       0.068737,
+       0.060675,
+       0.076643
+      ],
+      "agentic_communal": [
+       0.159411,
+       0.123685,
+       0.196586
+      ],
+      "gender_full": [
+       0.170139,
+       0.164288,
+       0.176122
+      ]
+     }
+    },
+    {
+     "id": "ex_union",
+     "label": "JobBERT + ESCO",
+     "reference": true,
+     "ndcg@10": [
+      0.441035,
+      0.41213,
+      0.470858
+     ],
+     "frac_nonempty": [
+      0.764872,
+      0.755426,
+      0.772437
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.069655,
+       0.066761,
+       0.072604
+      ],
+      "name_swap_us": [
+       0.04037,
+       0.034934,
+       0.04586
+      ],
+      "agentic_communal": [
+       0.449874,
+       0.39719,
+       0.50278
+      ],
+      "gender_full": [
+       0.074971,
+       0.071859,
+       0.07811
+      ]
+     }
+    }
+   ]
+  },
+  "entity_types": {
+   "title": "Which entity types?",
+   "held_fixed": "JobBERT + ESCO extractor, MiniLM, MaxSim-mean",
+   "rows": [
+    {
+     "id": "ent_skills_only",
+     "label": "Skills only",
+     "reference": true,
+     "ndcg@10": [
+      0.441035,
+      0.41213,
+      0.470858
+     ],
+     "frac_nonempty": [
+      0.764872,
+      0.755426,
+      0.772437
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.069655,
+       0.066761,
+       0.072604
+      ],
+      "name_swap_us": [
+       0.04037,
+       0.034934,
+       0.04586
+      ],
+      "agentic_communal": [
+       0.449874,
+       0.39719,
+       0.50278
+      ],
+      "gender_full": [
+       0.074971,
+       0.071859,
+       0.07811
+      ]
+     }
+    },
+    {
+     "id": "ent_plus_noun_chunks",
+     "label": "+ filtered noun chunks",
+     "reference": false,
+     "ndcg@10": [
+      0.545773,
+      0.519912,
+      0.570075
+     ],
+     "frac_nonempty": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.026206,
+       0.024783,
+       0.027755
+      ],
+      "name_swap_us": [
+       0.036493,
+       0.034027,
+       0.039214
+      ],
+      "agentic_communal": [
+       0.150676,
+       0.135976,
+       0.166195
+      ],
+      "gender_full": [
+       0.032561,
+       0.030976,
+       0.034191
+      ]
+     }
+    },
+    {
+     "id": "ent_plus_noun_chunks_verbs",
+     "label": "+ noun chunks + verb phrases",
+     "reference": false,
+     "ndcg@10": [
+      0.523644,
+      0.497486,
+      0.548946
+     ],
+     "frac_nonempty": [
+      1.0,
+      1.0,
+      1.0
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.026063,
+       0.024894,
+       0.027353
+      ],
+      "name_swap_us": [
+       0.033964,
+       0.031655,
+       0.036608
+      ],
+      "agentic_communal": [
+       0.122457,
+       0.109669,
+       0.135815
+      ],
+      "gender_full": [
+       0.031788,
+       0.03049,
+       0.033164
+      ]
+     }
+    }
+   ]
+  },
+  "backbone": {
+   "title": "Which entity encoder?",
+   "held_fixed": "JobBERT + ESCO extractor, MaxSim-mean",
+   "rows": [
+    {
+     "id": "bb_minilm",
+     "label": "MiniLM",
+     "reference": true,
+     "ndcg@10": [
+      0.441035,
+      0.41213,
+      0.470858
+     ],
+     "frac_nonempty": [
+      0.764872,
+      0.755426,
+      0.772437
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.069655,
+       0.066761,
+       0.072604
+      ],
+      "name_swap_us": [
+       0.04037,
+       0.034934,
+       0.04586
+      ],
+      "agentic_communal": [
+       0.449874,
+       0.39719,
+       0.50278
+      ],
+      "gender_full": [
+       0.074971,
+       0.071859,
+       0.07811
+      ]
+     }
+    },
+    {
+     "id": "bb_mpnet",
+     "label": "MPNet",
+     "reference": false,
+     "ndcg@10": [
+      0.43327,
+      0.403242,
+      0.462777
+     ],
+     "frac_nonempty": [
+      0.764872,
+      0.755426,
+      0.772437
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.067255,
+       0.064407,
+       0.070217
+      ],
+      "name_swap_us": [
+       0.040361,
+       0.034941,
+       0.045974
+      ],
+      "agentic_communal": [
+       0.373369,
+       0.321579,
+       0.420635
+      ],
+      "gender_full": [
+       0.072606,
+       0.069624,
+       0.075769
+      ]
+     }
+    },
+    {
+     "id": "bb_jobbert_v2",
+     "label": "JobBERT-v2",
+     "reference": false,
+     "ndcg@10": [
+      0.486112,
+      0.454587,
+      0.516904
+     ],
+     "frac_nonempty": [
+      0.764872,
+      0.755426,
+      0.772437
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.061132,
+       0.058329,
+       0.064214
+      ],
+      "name_swap_us": [
+       0.040679,
+       0.034385,
+       0.046798
+      ],
+      "agentic_communal": [
+       0.28107,
+       0.235254,
+       0.324926
+      ],
+      "gender_full": [
+       0.06663,
+       0.063544,
+       0.069895
+      ]
+     }
+    }
+   ]
+  },
+  "aggregation": {
+   "title": "How to aggregate?",
+   "held_fixed": "JobBERT + ESCO extractor, MiniLM",
+   "rows": [
+    {
+     "id": "agg_maxsim_mean",
+     "label": "MaxSim mean",
+     "reference": true,
+     "ndcg@10": [
+      0.441035,
+      0.41213,
+      0.470858
+     ],
+     "frac_nonempty": [
+      0.764872,
+      0.755426,
+      0.772437
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.069655,
+       0.066761,
+       0.072604
+      ],
+      "name_swap_us": [
+       0.04037,
+       0.034934,
+       0.04586
+      ],
+      "agentic_communal": [
+       0.449874,
+       0.39719,
+       0.50278
+      ],
+      "gender_full": [
+       0.074971,
+       0.071859,
+       0.07811
+      ]
+     }
+    },
+    {
+     "id": "agg_hungarian",
+     "label": "Hungarian (1-to-1)",
+     "reference": false,
+     "ndcg@10": [
+      0.266818,
+      0.245379,
+      0.288442
+     ],
+     "frac_nonempty": [
+      0.764872,
+      0.755426,
+      0.772437
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.101389,
+       0.098765,
+       0.104111
+      ],
+      "name_swap_us": [
+       0.0524,
+       0.047109,
+       0.057875
+      ],
+      "agentic_communal": [
+       0.446716,
+       0.410229,
+       0.480344
+      ],
+      "gender_full": [
+       0.108477,
+       0.105715,
+       0.111424
+      ]
+     }
+    },
+    {
+     "id": "agg_idf_weighted",
+     "label": "IDF-weighted MaxSim",
+     "reference": false,
+     "ndcg@10": [
+      0.451532,
+      0.422393,
+      0.481464
+     ],
+     "frac_nonempty": [
+      0.764872,
+      0.755426,
+      0.772437
+     ],
+     "gaps": {
+      "pronoun_swap": [
+       0.069915,
+       0.066987,
+       0.072892
+      ],
+      "name_swap_us": [
+       0.040209,
+       0.03476,
+       0.045636
+      ],
+      "agentic_communal": [
+       0.438823,
+       0.387269,
+       0.490731
+      ],
+      "gender_full": [
+       0.075204,
+       0.072172,
+       0.078372
+      ]
+     }
+    }
+   ]
+  }
+ },
+ "selection": {
+  "rule": "highest DEV nDCG@10 (declared before running; fairness not used)",
+  "rows": [
+   {
+    "id": "sel_union_fnc_minilm_maxsim",
+    "extractor": "jobbert+esco+fnc",
+    "backbone": "minilm",
+    "aggregation": "maxsim_mean",
+    "dev_ndcg@10": [
+     0.539501,
+     0.499745,
+     0.574225
+    ]
+   },
+   {
+    "id": "sel_union_fnc_minilm_idf",
+    "extractor": "jobbert+esco+fnc",
+    "backbone": "minilm",
+    "aggregation": "idf_weighted",
+    "dev_ndcg@10": [
+     0.559808,
+     0.519345,
+     0.595596
+    ]
+   },
+   {
+    "id": "sel_union_fnc_jobbert_maxsim",
+    "extractor": "jobbert+esco+fnc",
+    "backbone": "jobbert_v2",
+    "aggregation": "maxsim_mean",
+    "dev_ndcg@10": [
+     0.592965,
+     0.553332,
+     0.628368
+    ]
+   },
+   {
+    "id": "sel_union_fnc_jobbert_idf",
+    "extractor": "jobbert+esco+fnc",
+    "backbone": "jobbert_v2",
+    "aggregation": "idf_weighted",
+    "dev_ndcg@10": [
+     0.605749,
+     0.566396,
+     0.6422
+    ]
+   },
+   {
+    "id": "sel_esconc_minilm_maxsim",
+    "extractor": "esco_nc",
+    "backbone": "minilm",
+    "aggregation": "maxsim_mean",
+    "dev_ndcg@10": [
+     0.50524,
+     0.46847,
+     0.537256
+    ]
+   },
+   {
+    "id": "sel_esconc_minilm_idf",
+    "extractor": "esco_nc",
+    "backbone": "minilm",
+    "aggregation": "idf_weighted",
+    "dev_ndcg@10": [
+     0.526687,
+     0.489132,
+     0.559758
+    ]
+   },
+   {
+    "id": "sel_esconc_jobbert_maxsim",
+    "extractor": "esco_nc",
+    "backbone": "jobbert_v2",
+    "aggregation": "maxsim_mean",
+    "dev_ndcg@10": [
+     0.558058,
+     0.518162,
+     0.594266
+    ]
+   },
+   {
+    "id": "sel_esconc_jobbert_idf",
+    "extractor": "esco_nc",
+    "backbone": "jobbert_v2",
+    "aggregation": "idf_weighted",
+    "dev_ndcg@10": [
+     0.57319,
+     0.531514,
+     0.609839
+    ]
+   }
+  ],
+  "chosen": "sel_union_fnc_jobbert_idf"
+ },
+ "nearmiss": {
+  "bands": {
+   "old": {
+    "band": [
+     0.35,
+     0.55
+    ],
+    "dev": {
+     "n": 1275,
+     "strict": 0.0125,
+     "lenient": 0.08,
+     "per_pair": 1.73
+    },
+    "test": {
+     "n": 3100,
+     "strict": 0.0148,
+     "lenient": 0.1245,
+     "per_pair": 1.762
+    }
+   },
+   "chosen": {
+    "band": [
+     0.65,
+     0.9
+    ],
+    "dev": {
+     "n": 151,
+     "strict": 0.3642,
+     "lenient": 0.5099,
+     "per_pair": 0.205
+    },
+    "test": {
+     "n": 362,
+     "strict": 0.4834,
+     "lenient": 0.7072,
+     "per_pair": 0.206
+    }
+   }
+  },
+  "grid_dev": [
+   {
+    "lo": 0.2,
+    "hi": 0.25,
+    "n": 1291,
+    "lenient": 0.0139
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.3,
+    "n": 2767,
+    "lenient": 0.0235
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.35,
+    "n": 3850,
+    "lenient": 0.0255
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.4,
+    "n": 4486,
+    "lenient": 0.0256
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.45,
+    "n": 4851,
+    "lenient": 0.0278
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.5,
+    "n": 5016,
+    "lenient": 0.0349
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.55,
+    "n": 5125,
+    "lenient": 0.039
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.6,
+    "n": 5190,
+    "lenient": 0.0455
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.65,
+    "n": 5284,
+    "lenient": 0.0505
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.7,
+    "n": 5339,
+    "lenient": 0.0532
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.75,
+    "n": 5376,
+    "lenient": 0.0549
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.8,
+    "n": 5402,
+    "lenient": 0.0576
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.85,
+    "n": 5409,
+    "lenient": 0.0588
+   },
+   {
+    "lo": 0.2,
+    "hi": 0.9,
+    "n": 5435,
+    "lenient": 0.0633
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.3,
+    "n": 1476,
+    "lenient": 0.0318
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.35,
+    "n": 2559,
+    "lenient": 0.0313
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.4,
+    "n": 3195,
+    "lenient": 0.0304
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.45,
+    "n": 3560,
+    "lenient": 0.0329
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.5,
+    "n": 3725,
+    "lenient": 0.0421
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.55,
+    "n": 3834,
+    "lenient": 0.0475
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.6,
+    "n": 3899,
+    "lenient": 0.0559
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.65,
+    "n": 3993,
+    "lenient": 0.0624
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.7,
+    "n": 4048,
+    "lenient": 0.0657
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.75,
+    "n": 4085,
+    "lenient": 0.0678
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.8,
+    "n": 4111,
+    "lenient": 0.0713
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.85,
+    "n": 4118,
+    "lenient": 0.0729
+   },
+   {
+    "lo": 0.25,
+    "hi": 0.9,
+    "n": 4144,
+    "lenient": 0.0787
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.35,
+    "n": 1083,
+    "lenient": 0.0305
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.4,
+    "n": 1719,
+    "lenient": 0.0291
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.45,
+    "n": 2084,
+    "lenient": 0.0336
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.5,
+    "n": 2249,
+    "lenient": 0.0489
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.55,
+    "n": 2358,
+    "lenient": 0.0573
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.6,
+    "n": 2423,
+    "lenient": 0.0706
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.65,
+    "n": 2517,
+    "lenient": 0.0803
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.7,
+    "n": 2572,
+    "lenient": 0.0851
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.75,
+    "n": 2609,
+    "lenient": 0.0882
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.8,
+    "n": 2635,
+    "lenient": 0.0934
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.85,
+    "n": 2642,
+    "lenient": 0.0958
+   },
+   {
+    "lo": 0.3,
+    "hi": 0.9,
+    "n": 2668,
+    "lenient": 0.1046
+   },
+   {
+    "lo": 0.35,
+    "hi": 0.4,
+    "n": 636,
+    "lenient": 0.0267
+   },
+   {
+    "lo": 0.35,
+    "hi": 0.45,
+    "n": 1001,
+    "lenient": 0.037
+   },
+   {
+    "lo": 0.35,
+    "hi": 0.5,
+    "n": 1166,
+    "lenient": 0.066
+   },
+   {
+    "lo": 0.35,
+    "hi": 0.55,
+    "n": 1275,
+    "lenient": 0.08
+   },
+   {
+    "lo": 0.35,
+    "hi": 0.6,
+    "n": 1340,
+    "lenient": 0.103
+   },
+   {
+    "lo": 0.35,
+    "hi": 0.65,
+    "n": 1434,
+    "lenient": 0.1179
+   },
+   {
+    "lo": 0.35,
+    "hi": 0.7,
+    "n": 1489,
+    "lenient": 0.1249
+   },
+   {
+    "lo": 0.35,
+    "hi": 0.75,
+    "n": 1526,
+    "lenient": 0.1291
+   },
+   {
+    "lo": 0.35,
+    "hi": 0.8,
+    "n": 1552,
+    "lenient": 0.1372
+   },
+   {
+    "lo": 0.35,
+    "hi": 0.85,
+    "n": 1559,
+    "lenient": 0.1411
+   },
+   {
+    "lo": 0.35,
+    "hi": 0.9,
+    "n": 1585,
+    "lenient": 0.1552
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.45,
+    "n": 365,
+    "lenient": 0.0548
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.5,
+    "n": 530,
+    "lenient": 0.1132
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.55,
+    "n": 639,
+    "lenient": 0.133
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.6,
+    "n": 704,
+    "lenient": 0.1719
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.65,
+    "n": 798,
+    "lenient": 0.1905
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.7,
+    "n": 853,
+    "lenient": 0.1981
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.75,
+    "n": 890,
+    "lenient": 0.2022
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.8,
+    "n": 916,
+    "lenient": 0.214
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.85,
+    "n": 923,
+    "lenient": 0.2199
+   },
+   {
+    "lo": 0.4,
+    "hi": 0.9,
+    "n": 949,
+    "lenient": 0.2413
+   },
+   {
+    "lo": 0.45,
+    "hi": 0.5,
+    "n": 165,
+    "lenient": 0.2424
+   },
+   {
+    "lo": 0.45,
+    "hi": 0.55,
+    "n": 274,
+    "lenient": 0.2372
+   },
+   {
+    "lo": 0.45,
+    "hi": 0.6,
+    "n": 339,
+    "lenient": 0.2979
+   },
+   {
+    "lo": 0.45,
+    "hi": 0.65,
+    "n": 433,
+    "lenient": 0.3048
+   },
+   {
+    "lo": 0.45,
+    "hi": 0.7,
+    "n": 488,
+    "lenient": 0.3053
+   },
+   {
+    "lo": 0.45,
+    "hi": 0.75,
+    "n": 525,
+    "lenient": 0.3048
+   },
+   {
+    "lo": 0.45,
+    "hi": 0.8,
+    "n": 551,
+    "lenient": 0.3194
+   },
+   {
+    "lo": 0.45,
+    "hi": 0.85,
+    "n": 558,
+    "lenient": 0.328
+   },
+   {
+    "lo": 0.45,
+    "hi": 0.9,
+    "n": 584,
+    "lenient": 0.3579
+   },
+   {
+    "lo": 0.5,
+    "hi": 0.55,
+    "n": 109,
+    "lenient": 0.2294
+   },
+   {
+    "lo": 0.5,
+    "hi": 0.6,
+    "n": 174,
+    "lenient": 0.3506
+   },
+   {
+    "lo": 0.5,
+    "hi": 0.65,
+    "n": 268,
+    "lenient": 0.3433
+   },
+   {
+    "lo": 0.5,
+    "hi": 0.7,
+    "n": 323,
+    "lenient": 0.3375
+   },
+   {
+    "lo": 0.5,
+    "hi": 0.75,
+    "n": 360,
+    "lenient": 0.3333
+   },
+   {
+    "lo": 0.5,
+    "hi": 0.8,
+    "n": 386,
+    "lenient": 0.3523
+   },
+   {
+    "lo": 0.5,
+    "hi": 0.85,
+    "n": 393,
+    "lenient": 0.3639
+   },
+   {
+    "lo": 0.5,
+    "hi": 0.9,
+    "n": 419,
+    "lenient": 0.4033
+   },
+   {
+    "lo": 0.55,
+    "hi": 0.6,
+    "n": 65,
+    "lenient": 0.5538
+   },
+   {
+    "lo": 0.55,
+    "hi": 0.65,
+    "n": 159,
+    "lenient": 0.4214
+   },
+   {
+    "lo": 0.55,
+    "hi": 0.7,
+    "n": 214,
+    "lenient": 0.3925
+   },
+   {
+    "lo": 0.55,
+    "hi": 0.75,
+    "n": 251,
+    "lenient": 0.3785
+   },
+   {
+    "lo": 0.55,
+    "hi": 0.8,
+    "n": 277,
+    "lenient": 0.4007
+   },
+   {
+    "lo": 0.55,
+    "hi": 0.85,
+    "n": 284,
+    "lenient": 0.4155
+   },
+   {
+    "lo": 0.55,
+    "hi": 0.9,
+    "n": 310,
+    "lenient": 0.4645
+   },
+   {
+    "lo": 0.6,
+    "hi": 0.65,
+    "n": 94,
+    "lenient": 0.3298
+   },
+   {
+    "lo": 0.6,
+    "hi": 0.7,
+    "n": 149,
+    "lenient": 0.3221
+   },
+   {
+    "lo": 0.6,
+    "hi": 0.75,
+    "n": 186,
+    "lenient": 0.3172
+   },
+   {
+    "lo": 0.6,
+    "hi": 0.8,
+    "n": 212,
+    "lenient": 0.3538
+   },
+   {
+    "lo": 0.6,
+    "hi": 0.85,
+    "n": 219,
+    "lenient": 0.3744
+   },
+   {
+    "lo": 0.6,
+    "hi": 0.9,
+    "n": 245,
+    "lenient": 0.4408
+   },
+   {
+    "lo": 0.65,
+    "hi": 0.7,
+    "n": 55,
+    "lenient": 0.3091
+   },
+   {
+    "lo": 0.65,
+    "hi": 0.75,
+    "n": 92,
+    "lenient": 0.3043
+   },
+   {
+    "lo": 0.65,
+    "hi": 0.8,
+    "n": 118,
+    "lenient": 0.3729
+   },
+   {
+    "lo": 0.65,
+    "hi": 0.85,
+    "n": 125,
+    "lenient": 0.408
+   },
+   {
+    "lo": 0.65,
+    "hi": 0.9,
+    "n": 151,
+    "lenient": 0.5099
+   },
+   {
+    "lo": 0.7,
+    "hi": 0.75,
+    "n": 37,
+    "lenient": 0.2973
+   },
+   {
+    "lo": 0.7,
+    "hi": 0.8,
+    "n": 63,
+    "lenient": 0.4286
+   },
+   {
+    "lo": 0.7,
+    "hi": 0.85,
+    "n": 70,
+    "lenient": 0.4857
+   },
+   {
+    "lo": 0.7,
+    "hi": 0.9,
+    "n": 96,
+    "lenient": 0.625
+   }
+  ],
+  "min_suggestions_dev": 100
+ },
+ "extraction": {
+  "rows": [
+   {
+    "extractor": "noun_chunk",
+    "split": "dev",
+    "mode": "exact",
+    "precision": 0.0392,
+    "recall": 0.2335,
+    "f1": 0.0671
+   },
+   {
+    "extractor": "noun_chunk",
+    "split": "dev",
+    "mode": "partial",
+    "precision": 0.222,
+    "recall": 0.9177,
+    "f1": 0.3575
+   },
+   {
+    "extractor": "noun_chunk",
+    "split": "test",
+    "mode": "exact",
+    "precision": 0.0425,
+    "recall": 0.2561,
+    "f1": 0.0729
+   },
+   {
+    "extractor": "noun_chunk",
+    "split": "test",
+    "mode": "partial",
+    "precision": 0.1995,
+    "recall": 0.9192,
+    "f1": 0.3279
+   },
+   {
+    "extractor": "esco",
+    "split": "dev",
+    "mode": "exact",
+    "precision": 0.2088,
+    "recall": 0.1147,
+    "f1": 0.148
+   },
+   {
+    "extractor": "esco",
+    "split": "dev",
+    "mode": "partial",
+    "precision": 0.4848,
+    "recall": 0.2584,
+    "f1": 0.3372
+   },
+   {
+    "extractor": "esco",
+    "split": "test",
+    "mode": "exact",
+    "precision": 0.2308,
+    "recall": 0.1311,
+    "f1": 0.1672
+   },
+   {
+    "extractor": "esco",
+    "split": "test",
+    "mode": "partial",
+    "precision": 0.4654,
+    "recall": 0.2561,
+    "f1": 0.3304
+   },
+   {
+    "extractor": "esco+nc",
+    "split": "dev",
+    "mode": "exact",
+    "precision": 0.0755,
+    "recall": 0.258,
+    "f1": 0.1168
+   },
+   {
+    "extractor": "esco+nc",
+    "split": "dev",
+    "mode": "partial",
+    "precision": 0.2798,
+    "recall": 0.7906,
+    "f1": 0.4133
+   },
+   {
+    "extractor": "esco+nc",
+    "split": "test",
+    "mode": "exact",
+    "precision": 0.0823,
+    "recall": 0.2887,
+    "f1": 0.1281
+   },
+   {
+    "extractor": "esco+nc",
+    "split": "test",
+    "mode": "partial",
+    "precision": 0.2554,
+    "recall": 0.7815,
+    "f1": 0.385
+   },
+   {
+    "extractor": "filtered_nc",
+    "split": "dev",
+    "mode": "exact",
+    "precision": 0.0598,
+    "recall": 0.1937,
+    "f1": 0.0913
+   },
+   {
+    "extractor": "filtered_nc",
+    "split": "dev",
+    "mode": "partial",
+    "precision": 0.2657,
+    "recall": 0.8072,
+    "f1": 0.3998
+   },
+   {
+    "extractor": "filtered_nc",
+    "split": "test",
+    "mode": "exact",
+    "precision": 0.0641,
+    "recall": 0.2132,
+    "f1": 0.0986
+   },
+   {
+    "extractor": "filtered_nc",
+    "split": "test",
+    "mode": "partial",
+    "precision": 0.2432,
+    "recall": 0.8093,
+    "f1": 0.374
+   },
+   {
+    "extractor": "jobbert_ft_s13",
+    "split": "dev",
+    "mode": "exact",
+    "precision": 0.5566,
+    "recall": 0.6593,
+    "f1": 0.6036
+   },
+   {
+    "extractor": "jobbert_ft_s13",
+    "split": "dev",
+    "mode": "partial",
+    "precision": 0.8208,
+    "recall": 0.8937,
+    "f1": 0.8557
+   },
+   {
+    "extractor": "jobbert_ft_s13",
+    "split": "test",
+    "mode": "exact",
+    "precision": 0.5748,
+    "recall": 0.6614,
+    "f1": 0.6151
+   },
+   {
+    "extractor": "jobbert_ft_s13",
+    "split": "test",
+    "mode": "partial",
+    "precision": 0.8335,
+    "recall": 0.9086,
+    "f1": 0.8694
+   },
+   {
+    "extractor": "jobbert_ft_s14",
+    "split": "dev",
+    "mode": "exact",
+    "precision": 0.566,
+    "recall": 0.6362,
+    "f1": 0.599
+   },
+   {
+    "extractor": "jobbert_ft_s14",
+    "split": "dev",
+    "mode": "partial",
+    "precision": 0.8449,
+    "recall": 0.8835,
+    "f1": 0.8638
+   },
+   {
+    "extractor": "jobbert_ft_s14",
+    "split": "test",
+    "mode": "exact",
+    "precision": 0.5713,
+    "recall": 0.6336,
+    "f1": 0.6008
+   },
+   {
+    "extractor": "jobbert_ft_s14",
+    "split": "test",
+    "mode": "partial",
+    "precision": 0.8483,
+    "recall": 0.898,
+    "f1": 0.8725
+   },
+   {
+    "extractor": "jobbert_ft_s15",
+    "split": "dev",
+    "mode": "exact",
+    "precision": 0.5847,
+    "recall": 0.6449,
+    "f1": 0.6133
+   },
+   {
+    "extractor": "jobbert_ft_s15",
+    "split": "dev",
+    "mode": "partial",
+    "precision": 0.8495,
+    "recall": 0.8664,
+    "f1": 0.8579
+   },
+   {
+    "extractor": "jobbert_ft_s15",
+    "split": "test",
+    "mode": "exact",
+    "precision": 0.587,
+    "recall": 0.6508,
+    "f1": 0.6173
+   },
+   {
+    "extractor": "jobbert_ft_s15",
+    "split": "test",
+    "mode": "partial",
+    "precision": 0.8503,
+    "recall": 0.8918,
+    "f1": 0.8705
+   }
+  ]
+ },
+ "training": {
+  "seeds": {
+   "13": [
+    {
+     "epoch": 1,
+     "train_loss": 0.61511,
+     "dev_exact_f1": 0.4629,
+     "dev_partial_f1": 0.8259,
+     "seconds": 101.6
+    },
+    {
+     "epoch": 2,
+     "train_loss": 0.1791,
+     "dev_exact_f1": 0.5634,
+     "dev_partial_f1": 0.8441,
+     "seconds": 83.1
+    },
+    {
+     "epoch": 3,
+     "train_loss": 0.09439,
+     "dev_exact_f1": 0.5716,
+     "dev_partial_f1": 0.8465,
+     "seconds": 84.3
+    },
+    {
+     "epoch": 4,
+     "train_loss": 0.04925,
+     "dev_exact_f1": 0.5839,
+     "dev_partial_f1": 0.8544,
+     "seconds": 90.7
+    },
+    {
+     "epoch": 5,
+     "train_loss": 0.0313,
+     "dev_exact_f1": 0.5761,
+     "dev_partial_f1": 0.8485,
+     "seconds": 89.1
+    },
+    {
+     "epoch": 6,
+     "train_loss": 0.01709,
+     "dev_exact_f1": 0.5785,
+     "dev_partial_f1": 0.8553,
+     "seconds": 72.3
+    },
+    {
+     "epoch": 7,
+     "train_loss": 0.01063,
+     "dev_exact_f1": 0.5977,
+     "dev_partial_f1": 0.8555,
+     "seconds": 71.6
+    },
+    {
+     "epoch": 8,
+     "train_loss": 0.007,
+     "dev_exact_f1": 0.5961,
+     "dev_partial_f1": 0.8525,
+     "seconds": 83.0
+    },
+    {
+     "epoch": 9,
+     "train_loss": 0.00443,
+     "dev_exact_f1": 0.6036,
+     "dev_partial_f1": 0.8557,
+     "seconds": 93.9
+    },
+    {
+     "epoch": 10,
+     "train_loss": 0.00297,
+     "dev_exact_f1": 0.6014,
+     "dev_partial_f1": 0.8562,
+     "seconds": 85.7
+    }
+   ],
+   "14": [
+    {
+     "epoch": 1,
+     "train_loss": 0.637,
+     "dev_exact_f1": 0.4408,
+     "dev_partial_f1": 0.8132,
+     "seconds": 86.9
+    },
+    {
+     "epoch": 2,
+     "train_loss": 0.17608,
+     "dev_exact_f1": 0.5731,
+     "dev_partial_f1": 0.8485,
+     "seconds": 77.3
+    },
+    {
+     "epoch": 3,
+     "train_loss": 0.09312,
+     "dev_exact_f1": 0.599,
+     "dev_partial_f1": 0.8638,
+     "seconds": 74.7
+    },
+    {
+     "epoch": 4,
+     "train_loss": 0.05202,
+     "dev_exact_f1": 0.5908,
+     "dev_partial_f1": 0.8525,
+     "seconds": 71.3
+    },
+    {
+     "epoch": 5,
+     "train_loss": 0.03203,
+     "dev_exact_f1": 0.5962,
+     "dev_partial_f1": 0.8503,
+     "seconds": 70.8
+    },
+    {
+     "epoch": 6,
+     "train_loss": 0.01817,
+     "dev_exact_f1": 0.5932,
+     "dev_partial_f1": 0.8586,
+     "seconds": 70.7
+    }
+   ],
+   "15": [
+    {
+     "epoch": 1,
+     "train_loss": 0.57353,
+     "dev_exact_f1": 0.5024,
+     "dev_partial_f1": 0.8318,
+     "seconds": 71.0
+    },
+    {
+     "epoch": 2,
+     "train_loss": 0.1722,
+     "dev_exact_f1": 0.5514,
+     "dev_partial_f1": 0.8434,
+     "seconds": 70.5
+    },
+    {
+     "epoch": 3,
+     "train_loss": 0.09688,
+     "dev_exact_f1": 0.5758,
+     "dev_partial_f1": 0.8462,
+     "seconds": 74.1
+    },
+    {
+     "epoch": 4,
+     "train_loss": 0.0529,
+     "dev_exact_f1": 0.5736,
+     "dev_partial_f1": 0.8558,
+     "seconds": 90.1
+    },
+    {
+     "epoch": 5,
+     "train_loss": 0.02812,
+     "dev_exact_f1": 0.5907,
+     "dev_partial_f1": 0.8474,
+     "seconds": 81.7
+    },
+    {
+     "epoch": 6,
+     "train_loss": 0.01884,
+     "dev_exact_f1": 0.5988,
+     "dev_partial_f1": 0.8581,
+     "seconds": 81.6
+    },
+    {
+     "epoch": 7,
+     "train_loss": 0.01121,
+     "dev_exact_f1": 0.5914,
+     "dev_partial_f1": 0.8511,
+     "seconds": 85.7
+    },
+    {
+     "epoch": 8,
+     "train_loss": 0.00724,
+     "dev_exact_f1": 0.6135,
+     "dev_partial_f1": 0.858,
+     "seconds": 81.5
+    },
+    {
+     "epoch": 9,
+     "train_loss": 0.00477,
+     "dev_exact_f1": 0.6068,
+     "dev_partial_f1": 0.8567,
+     "seconds": 84.9
+    },
+    {
+     "epoch": 10,
+     "train_loss": 0.0031,
+     "dev_exact_f1": 0.6024,
+     "dev_partial_f1": 0.8546,
+     "seconds": 79.5
+    }
+   ]
+  },
+  "base_model": "jjzha/jobbert-base-cased",
+  "max_epochs": 10,
+  "patience": 3,
+  "lr": 5e-05,
+  "batch_size": 16,
+  "select_on": "dev exact span F1"
+ },
+ "data": {
+  "bios": {
+   "train": 257094,
+   "dev": 39536,
+   "test": 98748
+  },
+  "n_jds": 334,
+  "jd_mean_words": 472.7,
+  "pools": {
+   "dev": 100,
+   "test": 234
+  },
+  "pool_size": 100,
+  "relevant_per_pool": 10,
+  "jds_per_occupation": {
+   "accountant": 20,
+   "architect": 20,
+   "attorney": 20,
+   "dentist": 20,
+   "dietitian": 20,
+   "interior_designer": 20,
+   "nurse": 20,
+   "journalist": 20,
+   "paralegal": 20,
+   "personal_trainer": 20,
+   "teacher": 20,
+   "physician": 20,
+   "professor": 20,
+   "psychologist": 20,
+   "software_engineer": 20,
+   "photographer": 14,
+   "surgeon": 13,
+   "chiropractor": 7
+  },
+  "n_occupations_total": 28,
+  "n_occupations_with_pools": 18,
+  "perturbation_coverage": {
+   "dev": {
+    "affiliation_swap": 0.3,
+    "agentic_communal": 2.3,
+    "gender_full": 99.1,
+    "name_in_same_gender": 19.0,
+    "name_swap_in": 19.0,
+    "name_swap_us": 19.0,
+    "pronoun_swap": 98.9
+   },
+   "test": {
+    "affiliation_swap": 0.3,
+    "agentic_communal": 2.5,
+    "gender_full": 99.3,
+    "name_in_same_gender": 19.5,
+    "name_swap_in": 19.5,
+    "name_swap_us": 19.5,
+    "pronoun_swap": 99.0
+   }
+  }
+ },
+ "examples": [
+  {
+   "condition": "gender_full",
+   "context": "She graduated with honors in 2011. Having more than 5 years of diverse ex\u2026",
+   "changes": [
+    {
+     "from": "He",
+     "to": "She"
+    }
+   ]
+  },
+  {
+   "condition": "gender_full",
+   "context": "She is a WebSphere Application Server developer and the architect for the optimized local adapters feature. Natalie\u2019s worked in WebSphere Application Server development for four years. Prior to that, she spent ten years as a developer on the IBM z/OS Language Environment a\u2026",
+   "changes": [
+    {
+     "from": "He",
+     "to": "She"
+    },
+    {
+     "from": "Jim",
+     "to": "Natalie"
+    },
+    {
+     "from": "he",
+     "to": "she"
+    },
+    {
+     "from": "Jim",
+     "to": "Natalie"
+    }
+   ]
+  },
+  {
+   "condition": "name_swap_in",
+   "context": "He studied Computer Science at Saint Michael's College. Radhika began his processional carrier at IBM, where he became well versed in data warehouse design while acting as an ETL software developer. He has developed custom software solutions for Galen Healthcare Solutions' many clients, and has also provided remote and on-site technical consulting services. Currently, he develops products for Galen Healthcare Solutions and its partners. Last year, Radhika was part of a team that took first place at HackVT 2013.",
+   "changes": [
+    {
+     "from": "Mike",
+     "to": "Radhika"
+    },
+    {
+     "from": "Mike",
+     "to": "Radhika"
+    }
+   ]
+  },
+  {
+   "condition": "name_swap_in",
+   "context": "\u2026and writer \u2014 just to name a few. Through his company, MindWarp Films, Rekha realizes his own story-telling passion by producing and participating\u2026",
+   "changes": [
+    {
+     "from": "Carlos",
+     "to": "Rekha"
+    }
+   ]
+  },
+  {
+   "condition": "agentic_communal",
+   "context": "He is the founder of Registrationwala, an online tech committed platform providing the legal consultancy services. He has proficiency in diversified areas including taxation, accounting, company incorporation, IT infrastructure management, IT strategy, various IT operations and IT management. Possessing a vast experience of over 6 years, Gaurav is a passionate entrepreneur and successfully converted himself from financial background to core IT technocrat. He has supported the evaluation, selection, and implementation of newinformation syste\u2026",
+   "changes": [
+    {
+     "from": "driven",
+     "to": "committed"
+    },
+    {
+     "from": "led",
+     "to": "supported"
+    }
+   ]
+  },
+  {
+   "condition": "agentic_communal",
+   "context": "\u2026by making use of the Vulkan graphics API with Android devices. He has led many projects making use of the Vulkan API including Vainglory, The [\u2026",
+   "changes": [
+    {
+     "from": "supported",
+     "to": "led"
+    }
+   ]
+  },
+  {
+   "condition": "affiliation_swap",
+   "context": "Eagan-Donovan served on the Board of Directors of the nonprofits Professionals in Film & Video New England and The Next Door Theater in Winchester, MA,\u2026",
+   "changes": [
+    {
+     "from": "Women in",
+     "to": "Professionals in"
+    }
+   ]
+  },
+  {
+   "condition": "affiliation_swap",
+   "context": "\u2026al distribution, HBO/Cinemax). Ms. Ray is a Recipient of the National Professionals in Broadcast and Radio Award and numerous grant awards, including the Kh\u2026",
+   "changes": [
+    {
+     "from": "Women in",
+     "to": "Professionals in"
+    }
+   ]
+  }
+ ],
+ "figures": [
+  "headline_accuracy_vs_gap",
+  "perturbation_gaps",
+  "nearmiss_curves",
+  "nearmiss_heatmap_dev"
+ ]
+}

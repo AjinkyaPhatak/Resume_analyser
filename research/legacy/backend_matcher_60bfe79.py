@@ -1,3 +1,8 @@
+"""The deployed app's matcher as audited (backend/app/services/matcher.py @ 60bfe79), kept
+verbatim so the paper's `backend_match` baseline can still be checked against it
+(slow parity tests). The web app itself now runs the paper's method.
+"""
+
 import spacy
 from sentence_transformers import SentenceTransformer, util
 import re

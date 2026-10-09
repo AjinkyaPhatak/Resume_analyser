@@ -46,6 +46,8 @@ counts, so the paper's numbers use the committed snapshot's hash and retrieval d
 | Near-miss band sweep | `venv/Scripts/python.exe -m research.experiments.nearmiss_sweep` | `results/nearmiss_sweep.md`, `results/summaries/figures/nearmiss_*` | 10 min |
 | Held-out check (34 fresh test pools) | `venv/Scripts/python.exe -m research.analysis.fresh_pools` | `results/fresh_pools_check.md` | 1 min |
 | **Figures + LaTeX tables** | `venv/Scripts/python.exe -m research.analysis.make_all` | `results/summaries/figures/*.pdf|png`, `results/summaries/tables/*.tex` | 1 min |
+| Web app artifacts | `venv/Scripts/python.exe -m research.analysis.export_app` | `backend/artifacts/entity_li.json` (IDF, dev calibration, band) | 3 min |
+| Research web page data | `venv/Scripts/python.exe -m research.analysis.export_web` | `frontend/public/research/data.json`, `figures/` | 1 min |
 | Human annotation | `venv/Scripts/python.exe -m research.annotation.sample`; `streamlit run research/annotation/app.py`; `venv/Scripts/python.exe -m research.annotation.agreement` | `annotation/labels/`, `results/annotation_agreement.md` | people: 4–6 h each |
 
 Caches (`research/.cache/`) make reruns fast: extracted spans, embeddings and pair scores are

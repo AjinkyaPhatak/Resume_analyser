@@ -155,6 +155,17 @@ def test_cache_persists_across_instances(tmp_path):
     assert enc2.n_encoded == 0
 
 
+def test_encoder_without_cache_writes_nothing(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    fake = _CountingEncoder()
+    enc = CachedEncoder("fake-model", cache_dir=None, encode_fn=fake)
+    v = enc.encode(["a", "b", "a"])
+    assert v.shape == (3, 8) and enc.cache is None
+    enc.encode(["a"])
+    assert fake.calls == [["a", "b"], ["a"]]       # nothing remembered between calls
+    assert list(tmp_path.iterdir()) == []
+
+
 def test_cache_namespaces_are_isolated(tmp_path):
     a = CachedEncoder("model-a", cache_dir=tmp_path, encode_fn=_CountingEncoder())
     b = CachedEncoder("model-a", cache_dir=tmp_path, normalize=False, encode_fn=_CountingEncoder())

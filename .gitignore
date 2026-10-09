@@ -29,3 +29,6 @@ research/results/*
 !research/results/summaries/
 !research/results/.gitkeep
 .pytest_cache/
+
+# TypeScript incremental build info
+*.tsbuildinfo

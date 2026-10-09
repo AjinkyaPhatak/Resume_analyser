@@ -1,3 +1,5 @@
+# The matcher (app/services/engine.py) imports the research package: also install
+# ../research/requirements.txt into the same environment (see the root README).
 annotated-doc==0.0.5
 annotated-types==0.8.0
 anyio==4.14.2

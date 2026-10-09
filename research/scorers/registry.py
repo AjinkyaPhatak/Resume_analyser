@@ -4,6 +4,8 @@ A scorer spec is one entry of ``cfg['scorers']``:
     {name, type, enabled?, ...type-specific keys}
 Types: bm25 | tfidf | sbert | cross_encoder | llm_judge | entity.
 Encoders referenced by ``backbone`` come from ``cfg['backbones']``.
+``cfg['persist_cache'] = False`` (used by the web app) turns off the on-disk embedding and
+extraction caches, so texts being scored are never written to disk.
 """
 
 from __future__ import annotations
@@ -22,7 +24,8 @@ def build_encoder(bspec: dict, cfg: dict, device: str) -> CachedEncoder:
         bspec["model"], device=device, revision=bspec.get("revision"),
         max_seq_length=bspec.get("max_seq_length"), task=bspec.get("task"),
         batch_size=int(bspec.get("batch_size", cfg.get("embedding", {}).get("batch_size", 64))),
-        normalize=True, cache_dir=repo_path(cfg["paths"]["embedding_cache"]),
+        normalize=True,
+        cache_dir=repo_path(cfg["paths"]["embedding_cache"]) if cfg.get("persist_cache", True) else None,
     )
 
 
@@ -45,6 +48,8 @@ def build_extractor_for_scoring(espec: dict, cfg: dict):
     ecfg["device"] = cfg.get("device", "auto")
     extra = {k: ecfg.get(k) for k in ("spacy_model", "noun_chunk_filter", "esco_ruler")}
     ex = build_extractor({"name": espec.get("name", espec["type"]), **espec}, ecfg)
+    if not cfg.get("persist_cache", True):
+        return ex
     return CachedExtractor(ex, f"{espec.get('name', espec['type'])}|{spec_fingerprint(espec, extra)}")
 
 

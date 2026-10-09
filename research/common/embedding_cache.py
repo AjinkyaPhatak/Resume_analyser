@@ -96,7 +96,7 @@ class CachedEncoder:
         device: str = "cpu",
         batch_size: int = 64,
         normalize: bool = True,
-        cache_dir: str | Path = DEFAULT_CACHE_DIR,
+        cache_dir: str | Path | None = DEFAULT_CACHE_DIR,
         tag: str = "",
         encode_fn: EncodeFn | None = None,
         revision: str | None = None,
@@ -120,7 +120,8 @@ class CachedEncoder:
         if tag:
             parts.append(tag)
         self.namespace = "|".join(parts)
-        self.cache = EmbeddingCache(self.namespace, cache_dir)
+        # cache_dir=None: nothing is written to disk (the web app scores user resumes)
+        self.cache = EmbeddingCache(self.namespace, cache_dir) if cache_dir is not None else None
         self._encode_fn = encode_fn
         self._model = None
         self.n_encoded = 0  # texts actually sent to the model (cache misses)
@@ -156,7 +157,7 @@ class CachedEncoder:
         if not texts:
             raise ValueError("encode() called with no texts")
         keys = [text_key(t) for t in texts]
-        hits = self.cache.get_many(keys)
+        hits = self.cache.get_many(keys) if self.cache is not None else {}
         missing: dict[str, str] = {}
         for k, t in zip(keys, texts):
             if k not in hits and k not in missing:
@@ -168,7 +169,8 @@ class CachedEncoder:
                 norms = np.linalg.norm(vecs, axis=1, keepdims=True)
                 vecs = vecs / np.clip(norms, 1e-12, None)
             new = dict(zip(missing.keys(), vecs))
-            self.cache.put_many(new)
+            if self.cache is not None:
+                self.cache.put_many(new)
             hits.update(new)
             self.n_encoded += len(missing)
         return np.stack([hits[k] for k in keys])

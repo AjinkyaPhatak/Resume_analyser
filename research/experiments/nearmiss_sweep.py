@@ -47,20 +47,21 @@ def related(a: str, b: str, parents: dict[str, set[str]], lenient: bool) -> bool
     return lenient and bool(parents.get(a, set()) & parents.get(b, set()))
 
 
+def esco_concepts(spans) -> dict[str, str]:
+    """ESCO concept URI -> surface text of its first mention (spans in text order)."""
+    seen: dict[str, str] = {}
+    for s in spans:
+        if s.concept_id and s.concept_id not in seen:
+            seen[s.concept_id] = s.text
+    return seen
+
+
 def best_matches(pairs: pd.DataFrame, bios: pd.Series, jds: pd.Series, extractor, encoder,
                  parents) -> pd.DataFrame:
     """One row per (pair, JD concept): best resume concept, its similarity, correctness."""
     texts = list(dict.fromkeys(list(bios.loc[pairs["bio_id"]]) + list(jds.loc[pairs["jd_id"]])))
     spans = dict(zip(texts, extractor.extract_batch(texts)))
-
-    def concepts(text):
-        seen = {}
-        for s in spans[text]:
-            if s.concept_id and s.concept_id not in seen:
-                seen[s.concept_id] = s.text
-        return seen
-
-    con = {t: concepts(t) for t in texts}
+    con = {t: esco_concepts(spans[t]) for t in texts}
     strings = sorted({v for c in con.values() for v in c.values()})
     vec = dict(zip(strings, encoder.encode(strings))) if strings else {}
     rows = []

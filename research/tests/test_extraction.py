@@ -144,14 +144,7 @@ def test_filtered_nc_empty_text():
 @pytest.mark.slow
 def test_parity_with_backend_extract_entities():
     """The research port must produce exactly the backend's strings."""
-    import sys
-
-    backend = Path(__file__).resolve().parents[2] / "backend"
-    sys.path.insert(0, str(backend))
-    try:
-        from app.services.matcher import extract_entities
-    finally:
-        sys.path.remove(str(backend))
+    from research.legacy.backend_matcher_60bfe79 import extract_entities
     ex = NounChunkExtractor()
     for text in [
         "She is a nurse at Mount Sinai in New York. She led a team and deployed containers on AWS.",

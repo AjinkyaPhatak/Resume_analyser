@@ -317,17 +317,10 @@ def test_real_scorer_match_beats_mismatch(scorer_cfg, name):
 
 @pytest.mark.slow
 def test_backend_match_reproduces_backend(scorer_cfg):
-    import sys
-
+    from research.legacy.backend_matcher_60bfe79 import semantic_match
     from research.scorers.registry import build_scorer
 
-    backend = Path(__file__).resolve().parents[2] / "backend"
-    sys.path.insert(0, str(backend))
-    try:
-        from app.services.matcher import semantic_match
-    finally:
-        sys.path.remove(str(backend))
-    s = build_scorer(next(x for x in scorer_cfg["scorers"] if x["name"] == "backend_match"), scorer_cfg)
+    s =build_scorer(next(x for x in scorer_cfg["scorers"] if x["name"] == "backend_match"), scorer_cfg)
     for resume in (NURSE, SWE):
         ours = s.score(resume, JD)
         theirs = semantic_match(resume, JD)["match_percent"] / 100

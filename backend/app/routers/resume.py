@@ -6,6 +6,17 @@ from bson import ObjectId
 
 router = APIRouter(prefix="/resume", tags=["resume"])
 
+@router.post("/parse")
+async def parse_resume(file: UploadFile = File(...)):
+    """Extract a PDF's text without storing anything (used by the analyse page)."""
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are supported")
+    text = await extract_text_from_pdf(file)
+    if not text:
+        raise HTTPException(status_code=400, detail="Could not extract text from PDF")
+    return {"filename": file.filename, "text": text}
+
+
 @router.post("/upload")
 async def upload_resume(file: UploadFile = File(...)):
     if not file.filename.endswith(".pdf"):
