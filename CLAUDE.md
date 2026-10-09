@@ -89,6 +89,17 @@ Config paths are relative to the repo root. Configs inherit via a top-level `bas
 
 Update this table as each phase lands.
 
+## Phase 8 notes + FINAL RESULTS (full run, 234 test pools; results/main_summary.md)
+- nDCG@10: jobbert_v2 0.716 > sbert_mpnet 0.633 > entity_li (final) 0.619 ~ sbert_minilm 0.602 >
+  bm25 0.541 ~ backend 0.535 > tfidf 0.518 > cross_encoder 0.401.
+- Full gender flip |gap| (norm.): bm25 0.001, tfidf 0.005, entity_li 0.033, cross 0.121, jobbert 0.126,
+  mpnet 0.149, minilm 0.181, backend 0.272. entity_li beats every neural full-text scorer on every
+  gender condition (Holm p<0.001) but is above lexical scorers; agentic/communal ~ all scorers (0.05-0.07).
+- Held-out check on the 34 test pools never used before the final run: same pattern
+  (research.analysis.fresh_pools -> results/fresh_pools_check.md).
+- RMS TPR gap reported without CI (bootstrap invalid for that statistic here); mean TPR gap has CIs.
+- run.py `experiment.reuse_scores: true` recomputes all metrics from a run's scores.parquet.
+
 ## Phase 7 notes (annotation)
 - research/annotation/: sample.py (strata = consensus-score bin x JD occupation x bio gender;
   EQUAL budget per score bin cut at the 50%/90% consensus quantiles, because proportional

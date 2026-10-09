@@ -176,9 +176,12 @@ def tpr_gap_with_ci(dev: pd.DataFrame, test: pd.DataFrame, pools_dev: pd.DataFra
         return float(np.sqrt((gaps ** 2).mean())) if kind == "rms" else float(gaps.mean())
 
     out = {"threshold": thr}
-    for kind in ("mean", "rms"):
-        out[kind] = bootstrap_ci(n_units=len(g), stat_fn=lambda idx: stat(idx, kind), n_boot=n_boot,
-                                 alpha=alpha, seed=seed)
+    out["mean"] = bootstrap_ci(n_units=len(g), stat_fn=lambda idx: stat(idx, "mean"), n_boot=n_boot,
+                               alpha=alpha, seed=seed)
+    # RMS: point estimate only. Pool resampling adds noise to every per-occupation TPR, which
+    # inflates an RMS so strongly that almost all replicates exceed the estimate; neither the
+    # percentile nor the basic bootstrap interval is then valid (checked on the full run).
+    out["rms"] = (stat(np.arange(len(g)), "rms"), float("nan"), float("nan"))
     return out
 
 
@@ -263,7 +266,7 @@ def write_summary(path, metrics: pd.DataFrame, tests: pd.DataFrame, tpr: dict, c
               "| Scorer | threshold (z) | mean gap | RMS gap |", "|---|---|---|---|"]
     for s, t in tpr.items():
         lines.append(f"| {s} | {t['threshold']:.2f} | {t['mean'][0]:.3f} [{t['mean'][1]:.3f}, {t['mean'][2]:.3f}] | "
-                     f"{t['rms'][0]:.3f} [{t['rms'][1]:.3f}, {t['rms'][2]:.3f}] |")
+                     f"{t['rms'][0]:.3f} (no CI: bootstrap invalid for RMS here) |")
     lines += ["", "## Top-10 exposure (female share - 0.5; pools are 50/50)", "",
               "| Scorer | top-10 share | discounted exposure |", "|---|---|---|"]
     for s in scorers:
@@ -301,13 +304,29 @@ def main(argv=None):
         print(f"[{s}] {pools[s]['jd_id'].nunique()} pools, {len(tables[s])} (pair, condition) rows, "
               f"{int((tables[s]['condition'] == 'original').sum() + tables[s]['changed'].sum())} to score", flush=True)
 
+    # reuse_scores: recompute every metric from a previous run's scores.parquet (no re-scoring)
+    reuse = None
+    if ecfg.get("reuse_scores"):
+        reuse = pd.read_parquet(out_dir / "scores.parquet")
+        print(f"[reuse] metrics recomputed from {out_dir / 'scores.parquet'}", flush=True)
+        names = [s["name"] for s in cfg["scorers"] if s.get("enabled", True)]
+        scorer_objs = [type("Reused", (), {"name": n})() for n in names]
+    else:
+        scorer_objs = build_scorers(cfg)
     all_scores, per_pool, timings, tpr = [], [], {}, {}
-    for scorer in build_scorers(cfg):
+    for scorer in scorer_objs:
         t0 = time.perf_counter()
-        fit_scorer(scorer, data["lexical_corpus"], data["jds"].tolist())
+        if reuse is None:
+            fit_scorer(scorer, data["lexical_corpus"], data["jds"].tolist())
         scored = {}
         for s in splits:
-            scored[s] = score_split(scorer, tables[s], data[f"bios_{s}"], data["jds"], int(ecfg["score_chunk"]))
+            if reuse is not None:
+                scored[s] = (reuse[(reuse.scorer == scorer.name) & (reuse.split == s)]
+                             .drop(columns=["scorer", "split"]).assign(pert_text=None).reset_index(drop=True))
+                if scored[s].empty:
+                    raise ValueError(f"no saved scores for {scorer.name}/{s} in {out_dir}")
+            else:
+                scored[s] = score_split(scorer, tables[s], data[f"bios_{s}"], data["jds"], int(ecfg["score_chunk"]))
             pp = per_pool_metrics(scored[s], pools[s], conditions, int(ecfg["exposure_k"]))
             per_pool.append(pp.assign(scorer=scorer.name, split=s))
             all_scores.append(scored[s].drop(columns=["pert_text"]).assign(scorer=scorer.name, split=s))

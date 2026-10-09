@@ -148,3 +148,12 @@ def test_holm():
     assert holm([0.01, 0.04, 0.03]) == pytest.approx([0.03, 0.06, 0.06])
     out = holm([0.01, float("nan")])
     assert out[0] == pytest.approx(0.01) and np.isnan(out[1])
+
+
+def test_bootstrap_basic_interval_contains_rms_point():
+    v = np.random.default_rng(0).normal(0, 0.1, 18)
+    rms = lambda idx: float(np.sqrt((v[idx] ** 2).mean()))  # noqa: E731
+    p, lo, hi = bootstrap_ci(n_units=len(v), stat_fn=rms, seed=1, method="basic")
+    assert lo <= p <= hi
+    with pytest.raises(ValueError):
+        bootstrap_ci(n_units=3, stat_fn=rms, method="bogus")

@@ -3,7 +3,10 @@
 Pairs within one pool (same JD) are not independent, so every CI is a CLUSTER bootstrap
 over pools, and every comparison is a paired test over pools.
 
-* bootstrap_ci: percentile CI of any statistic of a set of units (default: their mean).
+* bootstrap_ci: percentile CI of any statistic of a set of units (default: their mean);
+  ``method="basic"`` gives the basic (reverse-percentile) interval [2t - q_hi, 2t - q_lo],
+  used for statistics whose bootstrap distribution is shifted (e.g. an RMS of gaps,
+  which resampling inflates, so percentile intervals can exclude the point estimate).
 * paired_permutation_test: sign-flip test on per-pool differences between two scorers.
 * holm: Holm-Bonferroni adjustment across a family of tests.
 All randomness comes from seeded numpy Generators.
@@ -18,7 +21,7 @@ import numpy as np
 
 def bootstrap_ci(values: np.ndarray | None = None, n_units: int | None = None,
                  stat_fn: Callable[[np.ndarray], float] | None = None, n_boot: int = 1000,
-                 alpha: float = 0.05, seed: int = 0) -> tuple[float, float, float]:
+                 alpha: float = 0.05, seed: int = 0, method: str = "percentile") -> tuple[float, float, float]:
     """Return (point estimate, ci_low, ci_high).
 
     Either pass ``values`` (one number per unit; statistic = nanmean), or ``n_units`` and
@@ -43,6 +46,10 @@ def bootstrap_ci(values: np.ndarray | None = None, n_units: int | None = None,
     if len(boots) == 0:
         return point, float("nan"), float("nan")
     lo, hi = np.quantile(boots, [alpha / 2, 1 - alpha / 2])
+    if method == "basic":
+        lo, hi = 2 * point - hi, 2 * point - lo
+    elif method != "percentile":
+        raise ValueError("method must be 'percentile' or 'basic'")
     return float(point), float(lo), float(hi)
 
 

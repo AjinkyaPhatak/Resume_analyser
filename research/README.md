@@ -44,6 +44,7 @@ counts, so the paper's numbers use the committed snapshot's hash and retrieval d
 | **Main experiment** | `venv/Scripts/python.exe -m research.experiments.run --config configs/main.yaml` | `results/main/`, `results/main_summary.md` | 1.5–2 h |
 | Ablations | `venv/Scripts/python.exe -m research.experiments.run --config configs/ablations/<name>.yaml` for `entity_types`, `aggregation`, `backbone`, `extractor` | `results/ablation_<name>/` | 10–60 min each (caches) |
 | Near-miss band sweep | `venv/Scripts/python.exe -m research.experiments.nearmiss_sweep` | `results/nearmiss_sweep.md`, `results/summaries/figures/nearmiss_*` | 10 min |
+| Held-out check (34 fresh test pools) | `venv/Scripts/python.exe -m research.analysis.fresh_pools` | `results/fresh_pools_check.md` | 1 min |
 | **Figures + LaTeX tables** | `venv/Scripts/python.exe -m research.analysis.make_all` | `results/summaries/figures/*.pdf|png`, `results/summaries/tables/*.tex` | 1 min |
 | Human annotation | `venv/Scripts/python.exe -m research.annotation.sample`; `streamlit run research/annotation/app.py`; `venv/Scripts/python.exe -m research.annotation.agreement` | `annotation/labels/`, `results/annotation_agreement.md` | people: 4–6 h each |
 
@@ -77,4 +78,8 @@ not be reported as final results.
   paired sign-flip permutation tests over pools, Holm-corrected; tie-aware ranking metrics.
 - Counterfactual gaps are normalised by the SD of the pool's original scores (scorers'
   scales differ) and reported over changed bios.
+- The candidate family for the main method was motivated by Phase 6 ablations run on 200 test
+  pools; the remaining 34 test pools were untouched until the final run and are reported
+  separately (`results/fresh_pools_check.md`).
+- Metrics can be recomputed without re-scoring: `--set experiment.reuse_scores=true`.
 - See `CLAUDE.md` for the full per-phase notes and known limitations.
