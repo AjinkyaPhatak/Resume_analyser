@@ -1,0 +1,48 @@
+base: data_prep.yaml
+
+# Phase 4: python -m research.experiments.make_perturbations --config configs/perturbations.yaml [--subset N]
+# --subset N = first N pooled bios (seeded order) per split.
+
+spacy_model: en_core_web_sm      # tagger (her: PRP vs PRP$), parser (dep rules), NER (PERSON)
+
+pronouns:
+  swap_titles: true              # Mr <-> Ms/Mrs/Miss
+
+names:
+  min_share: 0.95                # a token is a gendered first name only if >= 95% one gender
+  subject_only: true             # only names that look like the bio's subject (see names.py)
+  ssa:
+    # US SSA national baby names via HF mirror (CC0), spot-checked against official files.
+    hf_id: nkrishnaswami/us-ssa-baby-names-national
+    revision: b10af862de8b3bb8d315b2e11d1a334813b3ed8d
+    path: research/data/raw/names/ssa/names_ranks_counts.parquet
+    sha256: 8fce8b3f26d836ac93f82e171bc3cd340d3d7590b9d72ae912a944fc61d05f52
+    lexicon_years: [1930, 2005]  # births of plausible bio subjects (detection lexicon)
+    lexicon_min_births: 500
+    pool_years: [1950, 2000]     # replacement pool: common names of working-age adults
+    pool_min_share: 0.98
+    pool_size: 200               # top-N by births per gender
+  wikidata_india:
+    # Given names of humans with Indian citizenship in Wikidata (CC0); query in
+    # research/data/wikidata_india_names.rq, snapshot + retrieval time in data/raw/names/.
+    path: research/data/raw/names/wikidata_india/india_given_names.csv
+    pool_size: 100               # top-N by number of people per gender
+    exclude_if_ssa_births_over: 5000   # drop names also common in the US (e.g. John, Tara)
+    exclude_names: []            # names a human reviewer flags as mis-gendered / not given names
+                                 # in Wikidata (candidates seen 2026-10-09: Jagdeep in F, Kumari)
+
+affiliations_file: configs/affiliations.yaml
+agentic_communal_file: configs/agentic_communal.yaml
+
+conditions:
+  - {name: pronoun_swap,        parts: [pronoun]}
+  - {name: name_swap_us,        parts: [name_us_opposite]}
+  - {name: name_swap_in,        parts: [name_in_opposite]}
+  - {name: name_in_same_gender, parts: [name_in_same]}         # ethnicity cue only, gender fixed
+  - {name: affiliation_swap,    parts: [affiliation]}
+  - {name: agentic_communal,    parts: [agentic_communal]}
+  - {name: gender_full,         parts: [pronoun, name_us_opposite]}   # full gender flip
+
+samples:
+  split: dev
+  n_per_condition: 50

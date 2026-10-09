@@ -79,13 +79,29 @@ Config paths are relative to the repo root. Configs inherit via a top-level `bas
 | 2 | `venv/Scripts/python.exe -m research.experiments.prepare_data [--subset N]` -> data/processed/, data/occupation_map.csv, results/data_stats.md | done: 18/28 occupations have pools (100 dev / 234 test); 1114 ambiguous titles unreviewed |
 | 3 | `venv/Scripts/python.exe -m pytest research -m slow` (real-model scorer tests incl. backend parity) | done |
 | 3 | `venv/Scripts/python.exe -m research.experiments.scorer_smoke [--config ...] [--subset N]` (DEV pools only) | done |
-| 4 | perturbation samples: TBD | not started |
+| 4 | `venv/Scripts/python.exe -m research.experiments.make_perturbations [--subset N]` -> data/processed/perturbations_*.parquet, results/perturbation_samples.md, results/perturbation_stats.md | done |
 | 5 | `python -m research.experiments.run --config configs/main.yaml [--subset N]` | not started |
 | 6 | ablations: TBD | not started |
 | 7 | annotation app: TBD | not started |
 | 8 | figures/tables: TBD | not started |
 
 Update this table as each phase lands.
+
+## Phase 4 notes (perturbations)
+- `research/perturbations/`: each bio parsed once (en_core_web_sm); parts propose token-range
+  replacements, conditions merge parts (`registry.py`). Every substitution is logged (`Change`).
+- Conditions (configs/perturbations.yaml): pronoun_swap (bidirectional CDA; her/his heuristics in
+  pronouns.py), name_swap_us / name_swap_in (opposite gender), name_in_same_gender (ethnicity cue
+  only), affiliation_swap (configs/affiliations.yaml), agentic_communal (configs/agentic_communal.yaml,
+  POS/dep/passive/idiom guards), gender_full (pronoun + US name).
+- Name sources: SSA national counts (HF mirror nkrishnaswami/us-ssa-baby-names-national @ b10af86,
+  spot-checked vs official files; ssa.gov blocks scripts) and Wikidata given names of Indian citizens
+  (query research/data/wikidata_india_names.rq, CSV snapshot in data/raw/names/). Rejected: HF
+  "indian names" sets without gender/provenance, and MeghanaKap/indian_names (customer PII).
+- Name swap only touches strongly gendered (>=95%) first names of the bio's SUBJECT (single-word
+  mention or clause subject), never after titles or surnames.
+- Coverage is uneven by design: pronoun ~99% of bios, names ~30%, agentic ~6%, affiliation <1%.
+  Unchanged bios have zero gap by construction -> report gaps on changed bios as well.
 
 ## Phase 3 notes (scorers)
 - All scorers implement `scorers/base.py::Scorer`; built from `configs/scorers.yaml` via

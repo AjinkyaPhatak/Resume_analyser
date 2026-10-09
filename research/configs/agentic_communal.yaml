@@ -1,0 +1,34 @@
+# Agentic (masculine-coded) <-> communal (feminine-coded) near-synonym swaps for
+# agentic_communal_rewrite. Hand-curated (2026-10-09); no automatic synonyms.
+# coded: where each word's gender coding comes from --
+#   gaucher = stem on the Gaucher et al. (2011) lists as used by backend/app/services/bias.py
+#   backend = only on the backend's list (provenance vs. Gaucher unverified; see BACKEND_AUDIT.md)
+#   none    = on neither list (a neutral word used for grammaticality)
+# pos / dep / not_dep use spaCy en_core_web_sm labels; no_passive skips "is supported by X";
+# idiom_guard skips "led to" (=caused), phrasal verbs ("drive out"), "lead the way",
+# and object + complement uses ("lead her to embark").
+# Directions are listed separately because some swaps only read well one way.
+entries:
+  # ---- agentic -> communal ----
+  - {from: led,          to: supported,    direction: agentic->communal, pos: [VERB], idiom_guard: true, no_passive: true, coded: "gaucher (lead*) -> gaucher (support*)"}
+  - {from: leads,        to: supports,     direction: agentic->communal, pos: [VERB], idiom_guard: true, coded: "gaucher -> gaucher"}
+  - {from: lead,         to: support,      direction: agentic->communal, pos: [VERB], idiom_guard: true, coded: "gaucher -> gaucher"}
+  - {from: leading,      to: supporting,   direction: agentic->communal, pos: [VERB], idiom_guard: true, not_dep: [amod, compound], coded: "gaucher -> gaucher"}
+  - {from: championed,   to: supported,    direction: agentic->communal, pos: [VERB], idiom_guard: true, no_passive: true, coded: "backend (champion) -> gaucher"}
+  - {from: champions,    to: supports,     direction: agentic->communal, pos: [VERB], idiom_guard: true, coded: "backend -> gaucher"}
+  - {from: drove,        to: helped,       direction: agentic->communal, pos: [VERB], idiom_guard: true, coded: "none -> none (spec example)"}
+  - {from: drives,       to: helps,        direction: agentic->communal, pos: [VERB], idiom_guard: true, coded: "none -> none"}
+  - {from: driving,      to: helping,      direction: agentic->communal, pos: [VERB], idiom_guard: true, not_dep: [amod, compound], coded: "none -> none"}
+  - {from: driven,       to: committed,    direction: agentic->communal, pos: [ADJ, VERB], dep: [amod, acomp], no_passive: true, coded: "backend (driven) -> gaucher (commit*)"}
+  - {from: determined,   to: committed,    direction: agentic->communal, pos: [ADJ], dep: [amod], coded: "gaucher (determin*) -> gaucher (commit*)"}
+  - {from: ambitious,    to: enthusiastic, direction: agentic->communal, pos: [ADJ], coded: "gaucher (ambitio*) -> backend (enthusiastic)"}
+  # ---- communal -> agentic ----
+  - {from: supported,    to: led,          direction: communal->agentic, pos: [VERB], idiom_guard: true, no_passive: true, coded: "gaucher -> gaucher"}
+  - {from: supports,     to: leads,        direction: communal->agentic, pos: [VERB], idiom_guard: true, coded: "gaucher -> gaucher"}
+  # (removed 2026-10-09 after dev sample review: base-form "support" mostly means benefit/fund in
+  #  purpose clauses -- "booklets to support local charities" -> "to lead local charities")
+  - {from: supporting,   to: leading,      direction: communal->agentic, pos: [VERB], idiom_guard: true, not_dep: [amod, compound], coded: "gaucher -> gaucher"}
+  - {from: committed,    to: determined,   direction: communal->agentic, pos: [ADJ], dep: [amod], coded: "gaucher -> gaucher"}
+  - {from: nurtured,     to: championed,   direction: communal->agentic, pos: [VERB], idiom_guard: true, no_passive: true, coded: "gaucher (nurtur*) -> backend"}
+  - {from: nurtures,     to: champions,    direction: communal->agentic, pos: [VERB], idiom_guard: true, coded: "gaucher -> backend"}
+  - {from: enthusiastic, to: ambitious,    direction: communal->agentic, pos: [ADJ], coded: "backend -> gaucher"}

@@ -1,0 +1,21 @@
+# Gendered affiliations for affiliation_swap. Hand-curated (2026-10-09). Real organisations
+# are used wherever one exists; one-way entries map a women's organisation to a real
+# general/neutral one in the same field. case_sensitive: true limits a rule to
+# capitalised (proper-name) uses, so e.g. "research on women in leadership" is untouched.
+# "women's health" is a medical specialty, not an affiliation, and is deliberately absent.
+pairs:
+  - {a: sorority, b: fraternity}
+  - {a: sororities, b: fraternities}
+  - {a: Girl Scouts, b: Boy Scouts}
+  - {a: Girl Scout, b: Boy Scout}
+  - {a: Alpha Kappa Alpha, b: Alpha Phi Alpha}          # oldest historically Black sorority / fraternity
+  - {a: Delta Sigma Theta, b: Kappa Alpha Psi}
+  - {a: Zeta Phi Beta, b: Phi Beta Sigma}               # constitutionally bound sister/brother orgs
+  - {a: Society of Women Engineers, b: National Society of Professional Engineers, bidirectional: false}
+  - {a: American Association of University Women, b: American Association of University Professors, bidirectional: false}
+  - {a: National Association of Women Lawyers, b: American Bar Association, bidirectional: false}
+  - {a: "American Medical Women's Association", b: American Medical Association, bidirectional: false}
+  - {a: "Women's Bar Association", b: Bar Association, bidirectional: false, case_sensitive: true}
+  - {a: Junior League, b: Rotary Club, bidirectional: false}
+  - {a: "women's college", b: liberal arts college, bidirectional: false}
+  - {a: Women in, b: Professionals in, bidirectional: false, case_sensitive: true}   # "Women in Film/Tech/Medicine ..." orgs

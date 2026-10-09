@@ -1,0 +1,15 @@
+# Given names of humans with Indian citizenship in Wikidata, by the name's gender class.
+# Q5 human, P27 country of citizenship, Q668 India, P735 given name,
+# Q12308941 male given name, Q11879590 female given name.
+SELECT ?name ?label ?gender (COUNT(DISTINCT ?person) AS ?n) WHERE {
+  ?person wdt:P31 wd:Q5 ;
+          wdt:P27 wd:Q668 ;
+          wdt:P735 ?name .
+  VALUES (?gclass ?gender) { (wd:Q12308941 "M") (wd:Q11879590 "F") }
+  ?name wdt:P31 ?gclass ;
+        rdfs:label ?label .
+  FILTER(LANG(?label) = "en")
+}
+GROUP BY ?name ?label ?gender
+HAVING (COUNT(DISTINCT ?person) >= 3)
+ORDER BY DESC(?n)
