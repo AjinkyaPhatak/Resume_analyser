@@ -81,11 +81,21 @@ Config paths are relative to the repo root. Configs inherit via a top-level `bas
 | 3 | `venv/Scripts/python.exe -m research.experiments.scorer_smoke [--config ...] [--subset N]` (DEV pools only) | done |
 | 4 | `venv/Scripts/python.exe -m research.experiments.make_perturbations [--subset N]` -> data/processed/perturbations_*.parquet, results/perturbation_samples.md, results/perturbation_stats.md | done |
 | 5 | `venv/Scripts/python.exe -m research.experiments.run --config configs/main.yaml [--subset N]` -> results/main[_subsetN]/ + results/main[_subsetN]_summary.md | harness done; smoke test --subset 200 |
-| 6 | ablations: TBD | not started |
+| 6 | `venv/Scripts/python.exe -m research.experiments.run --config configs/ablations/{entity_types,aggregation,backbone,extractor}.yaml [--subset N]` | done (subset 200) |
+| 6 | `venv/Scripts/python.exe -m research.experiments.nearmiss_sweep --config configs/ablations/nearmiss.yaml [--subset N]` -> results/nearmiss_sweep*.md, results/summaries/figures/ | done (subset 200) |
 | 7 | annotation app: TBD | not started |
 | 8 | figures/tables: TBD | not started |
 
 Update this table as each phase lands.
+
+## Phase 6 notes (ablations)
+- Ablation configs in configs/ablations/ reuse run.py; each lists the main variant as `our_method`
+  (reference for paired tests). entity_types: skills-only / +filtered noun chunks / +verb phrases.
+- Near-miss sweep: suggestion correctness proxy = ESCO hierarchy (strict: same concept or direct
+  parent/child; lenient: + siblings). Band chosen on DEV, reported on TEST. Backend band 0.35-0.55 is at
+  the base rate (noise); best dev band 0.65-0.90 (above the backend's 0.55 match threshold).
+- Figures go to results/summaries/figures/ (tracked). Colours: validated dataviz palette
+  (categorical #2a78d6/#eb6834, blue sequential ramp); render and eyeball every figure.
 
 ## Phase 5 notes (metrics + harness)
 - metrics/ranking.py: TIE-AWARE expected nDCG@10 (graded, gain 2^g-1), MRR, P@k (McSherry & Najork 2008),

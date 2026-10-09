@@ -1,0 +1,19 @@
+base: ../main.yaml
+# Phase 6 ablation: which entity types let demographic signal back in?
+#   python -m research.experiments.run --config configs/ablations/entity_types.yaml [--subset N]
+# Reference (= main entity_li): union(JobBERT ft, ESCO), skill+knowledge labels only.
+experiment: {name: ablation_entity_types, our_method: ent_skills_only}
+
+_jb: &jb {type: token_classifier, name: jobbert_ft_s13, model_dir: research/models/jobbert_skillspan/seed13}
+_esco: &esco {type: esco}
+_fnc: &fnc {type: filtered_nc}
+_vp: &vp {type: noun_chunk, name: verb_phrases_only, use_ner: false, use_noun_chunks: false, use_verb_phrases: true}
+
+scorers:
+  - {name: ent_skills_only, type: entity, backbone: minilm, aggregation: maxsim_mean, labels: [skill, knowledge],
+     extractor: {type: union, name: jobbert+esco, members: [*jb, *esco]}}
+  - {name: ent_plus_noun_chunks, type: entity, backbone: minilm, aggregation: maxsim_mean, labels: [skill, knowledge],
+     extractor: {type: union, name: jobbert+esco+fnc, members: [*jb, *esco, *fnc]}}
+  - {name: ent_plus_noun_chunks_verbs, type: entity, backbone: minilm, aggregation: maxsim_mean,
+     labels: [skill, knowledge, verb_phrase],
+     extractor: {type: union, name: jobbert+esco+fnc+vp, members: [*jb, *esco, *fnc, *vp]}}

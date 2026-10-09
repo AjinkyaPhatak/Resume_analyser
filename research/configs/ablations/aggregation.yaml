@@ -1,0 +1,10 @@
+base: ../main.yaml
+# Phase 6 ablation: aggregation of the entity similarity matrix.
+experiment: {name: ablation_aggregation, our_method: agg_maxsim_mean}
+
+_ex: &ex {type: union, name: jobbert+esco, members: [{type: token_classifier, name: jobbert_ft_s13, model_dir: research/models/jobbert_skillspan/seed13}, {type: esco}]}
+
+scorers:
+  - {name: agg_maxsim_mean,  type: entity, extractor: *ex, backbone: minilm, aggregation: maxsim_mean,  labels: [skill, knowledge]}
+  - {name: agg_hungarian,    type: entity, extractor: *ex, backbone: minilm, aggregation: hungarian,    labels: [skill, knowledge]}
+  - {name: agg_idf_weighted, type: entity, extractor: *ex, backbone: minilm, aggregation: idf_weighted, labels: [skill, knowledge]}

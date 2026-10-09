@@ -32,7 +32,11 @@ def build_extractor(spec: dict, cfg: dict) -> Extractor:
     if kind == "noun_chunk":
         from .noun_chunk import NounChunkExtractor
 
-        return NounChunkExtractor(spacy_model=model, name=name)
+        # component switches let ablations build e.g. a verb-phrase-only extractor
+        return NounChunkExtractor(spacy_model=model, name=name,
+                                  use_ner=bool(spec.get("use_ner", True)),
+                                  use_noun_chunks=bool(spec.get("use_noun_chunks", True)),
+                                  use_verb_phrases=bool(spec.get("use_verb_phrases", True)))
     if kind == "filtered_nc":
         from .noun_chunk import FilteredNounChunkExtractor
 

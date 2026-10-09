@@ -1,0 +1,13 @@
+base: ../main.yaml
+# Phase 6 ablation: skill extractor (MiniLM, maxsim_mean throughout).
+# noun_chunk keeps all its span types (backend-style); the others keep skill+knowledge.
+experiment: {name: ablation_extractor, our_method: ex_union}
+
+_jb: &jb {type: token_classifier, name: jobbert_ft_s13, model_dir: research/models/jobbert_skillspan/seed13}
+
+scorers:
+  - {name: ex_noun_chunk, type: entity, extractor: {type: noun_chunk}, backbone: minilm, aggregation: maxsim_mean, labels: null}
+  - {name: ex_esco,       type: entity, extractor: {type: esco},       backbone: minilm, aggregation: maxsim_mean, labels: [skill, knowledge]}
+  - {name: ex_jobbert_ft, type: entity, extractor: *jb,                backbone: minilm, aggregation: maxsim_mean, labels: [skill, knowledge]}
+  - {name: ex_union,      type: entity, extractor: {type: union, name: jobbert+esco, members: [*jb, {type: esco}]},
+     backbone: minilm, aggregation: maxsim_mean, labels: [skill, knowledge]}

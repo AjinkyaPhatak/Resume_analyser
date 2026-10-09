@@ -1,0 +1,17 @@
+base: ../main.yaml
+# Phase 6: near-miss suggestion band sweep (replaces the backend's hardcoded 0.35-0.55).
+#   python -m research.experiments.nearmiss_sweep --config configs/ablations/nearmiss.yaml [--subset N]
+# A suggestion = a JD skill whose best resume match has similarity in [lo, hi) (the backend
+# calls these "consider reframing X to highlight Y"). Correctness proxy: the two ESCO
+# concepts are the same or hierarchically adjacent (see nearmiss_sweep.py).
+nearmiss:
+  extractor: {type: esco}            # ESCO spans carry concept URIs, needed for the proxy
+  backbone: minilm                   # the backend's model
+  pairs: relevant                    # relevant (same-occupation) bio-JD pairs: the reframing use case
+  lo_grid: [0.20, 0.70, 0.05]        # start, stop (inclusive), step
+  hi_grid: [0.25, 0.90, 0.05]
+  backend_band: [0.35, 0.55]
+  select_on: lenient                 # band chosen on DEV by this precision ...
+  min_suggestions_dev: 100           # ... among bands with at least this many dev suggestions
+  hierarchy_csv: research/data/raw/esco/broaderRelationsSkillPillar_en.csv
+  figures_dir: research/results/summaries/figures

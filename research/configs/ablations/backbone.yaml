@@ -1,0 +1,11 @@
+base: ../main.yaml
+# Phase 6 ablation: backbone used to embed entities (JobBERT-v2 was trained on short
+# title/skill strings, i.e. close to entity inputs).
+experiment: {name: ablation_backbone, our_method: bb_minilm}
+
+_ex: &ex {type: union, name: jobbert+esco, members: [{type: token_classifier, name: jobbert_ft_s13, model_dir: research/models/jobbert_skillspan/seed13}, {type: esco}]}
+
+scorers:
+  - {name: bb_minilm,     type: entity, extractor: *ex, backbone: minilm,     aggregation: maxsim_mean, labels: [skill, knowledge]}
+  - {name: bb_mpnet,      type: entity, extractor: *ex, backbone: mpnet,      aggregation: maxsim_mean, labels: [skill, knowledge]}
+  - {name: bb_jobbert_v2, type: entity, extractor: *ex, backbone: jobbert_v2, aggregation: maxsim_mean, labels: [skill, knowledge]}

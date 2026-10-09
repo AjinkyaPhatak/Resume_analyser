@@ -23,6 +23,7 @@ tqdm==4.70.0
 pandas==3.0.6
 pyarrow==25.0.1
 rank_bm25==0.2.2
+matplotlib==3.11.2
 
 # testing
 pytest==9.1.1
