@@ -32,3 +32,9 @@ research/results/*
 
 # TypeScript incremental build info
 *.tsbuildinfo
+
+# LaTeX build outputs (the PDF is copied to the repo root)
+report/ieee/*.log
+report/ieee/*.pdf
+report/ieee/*.xdv
+report/ieee/*.aux
